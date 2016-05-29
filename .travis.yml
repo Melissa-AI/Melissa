@@ -1,0 +1,5 @@
+language: python
+python:
+  - "2.7"
+install: "curl -O https://raw.githubusercontent.com/Melissa-AI/Melissa-Core/master/utilities/install-core.sh && chmod +x install-core.sh && ./install-core.sh"
+script: "tests/check_profile.py"
