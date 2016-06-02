@@ -5,6 +5,7 @@ try:
     from pocketsphinx.pocketsphinx import *
     from sphinxbase.sphinxbase import *
 except:
+    print "unable to import pocketsphinx"
     pass
 
 from brain import brain
@@ -32,20 +33,27 @@ def stt(profile_data):
 
         def sphinx_stt():
             modeldir = profile_data['pocketsphinx']['modeldir']
+            modeldir = modeldir.encode("ascii")
             hmm = profile_data['pocketsphinx']['hmm']
+            hmm = hmm.encode("ascii")
             lm = profile_data['pocketsphinx']['lm']
+            lm = lm.encode("ascii")
             dic = profile_data['pocketsphinx']['dic']
+            dic = dic.encode("ascii")
 
             config = Decoder.default_config()
             config.set_string('-hmm', os.path.join(modeldir, hmm))
             config.set_string('-lm', os.path.join(modeldir, lm))
             config.set_string('-dict', os.path.join(modeldir, dic))
             config.set_string('-logfn', '/dev/null')
+
+            print config
             decoder = Decoder(config)
 
             stream = open('recording.wav', 'rb')
 
             in_speech_bf = False
+            speech_text = ""
             decoder.start_utt()
             while True:
                 buf = stream.read(1024)
