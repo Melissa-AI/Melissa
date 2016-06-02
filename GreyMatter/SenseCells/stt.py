@@ -5,7 +5,6 @@ try:
     from pocketsphinx.pocketsphinx import *
     from sphinxbase.sphinxbase import *
 except:
-    print "unable to import pocketsphinx"
     pass
 
 from brain import brain
