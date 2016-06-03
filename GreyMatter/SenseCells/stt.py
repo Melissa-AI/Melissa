@@ -45,8 +45,6 @@ def stt(profile_data):
             config.set_string('-lm', os.path.join(modeldir, lm))
             config.set_string('-dict', os.path.join(modeldir, dic))
             config.set_string('-logfn', '/dev/null')
-
-            print config
             decoder = Decoder(config)
 
             stream = open('recording.wav', 'rb')
