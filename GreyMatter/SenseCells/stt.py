@@ -30,42 +30,33 @@ def stt(profile_data):
 
     elif profile_data['stt'] == 'sphinx':
 
+        modeldir = profile_data['pocketsphinx']['modeldir']
+        modeldir = modeldir.encode("ascii")
+        hmm = profile_data['pocketsphinx']['hmm']
+        hmm = hmm.encode("ascii")
+        lm = profile_data['pocketsphinx']['lm']
+        lm = lm.encode("ascii")
+        dic = profile_data['pocketsphinx']['dic']
+        dic = dic.encode("ascii")
+
+        config = Decoder.default_config()
+        config.set_string('-hmm', os.path.join(modeldir, hmm))
+        config.set_string('-lm', os.path.join(modeldir, lm))
+        config.set_string('-dict', os.path.join(modeldir, dic))
+        config.set_string('-logfn', '/dev/null')
+        decoder = Decoder(config)
+
         def sphinx_stt():
-            modeldir = profile_data['pocketsphinx']['modeldir']
-            modeldir = modeldir.encode("ascii")
-            hmm = profile_data['pocketsphinx']['hmm']
-            hmm = hmm.encode("ascii")
-            lm = profile_data['pocketsphinx']['lm']
-            lm = lm.encode("ascii")
-            dic = profile_data['pocketsphinx']['dic']
-            dic = dic.encode("ascii")
-
-            config = Decoder.default_config()
-            config.set_string('-hmm', os.path.join(modeldir, hmm))
-            config.set_string('-lm', os.path.join(modeldir, lm))
-            config.set_string('-dict', os.path.join(modeldir, dic))
-            config.set_string('-logfn', '/dev/null')
-            decoder = Decoder(config)
-
             stream = open('recording.wav', 'rb')
+            stream.seek(44) # bypasses wav header
 
-            in_speech_bf = False
-            speech_text = ""
+            data = stream.read()
             decoder.start_utt()
-            while True:
-                buf = stream.read(1024)
-                if buf:
-                    decoder.process_raw(buf, False, False)
-                    if decoder.get_in_speech() != in_speech_bf:
-                        in_speech_bf = decoder.get_in_speech()
-                        if not in_speech_bf:
-                            decoder.end_utt()
-                            speech_text = decoder.hyp().hypstr
-                            print speech_text
-                            decoder.start_utt()
-                else:
-                    break
+            decoder.process_raw(data, False, True)
             decoder.end_utt()
+
+            speech_text = decoder.hyp().hypstr
+            print("Melissa thinks you said '" + speech_text + "'")
             return speech_text.lower().replace("'", "")
 
         while True:
@@ -78,3 +69,4 @@ def stt(profile_data):
                 f.write(audio.get_wav_data())
 
             brain(profile_data, sphinx_stt())
+
