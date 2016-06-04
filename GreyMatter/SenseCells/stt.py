@@ -30,14 +30,10 @@ def stt(profile_data):
 
     elif profile_data['stt'] == 'sphinx':
 
-        modeldir = profile_data['pocketsphinx']['modeldir']
-        modeldir = modeldir.encode("ascii")
-        hmm = profile_data['pocketsphinx']['hmm']
-        hmm = hmm.encode("ascii")
-        lm = profile_data['pocketsphinx']['lm']
-        lm = lm.encode("ascii")
-        dic = profile_data['pocketsphinx']['dic']
-        dic = dic.encode("ascii")
+        modeldir = profile_data['pocketsphinx']['modeldir'].encode("ascii")
+        hmm = profile_data['pocketsphinx']['hmm'].encode("ascii")
+        lm = profile_data['pocketsphinx']['lm'].encode("ascii")
+        dic = profile_data['pocketsphinx']['dic'].encode("ascii")
 
         config = Decoder.default_config()
         config.set_string('-hmm', os.path.join(modeldir, hmm))
