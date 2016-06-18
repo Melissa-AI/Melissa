@@ -1,121 +1,223 @@
-from GreyMatter import \
-  business_news_reader, \
-  define_subject, \
-  general_conversations, \
-  imgur_handler, \
-  lighting, \
-  notes, \
-  sleep, \
-  tell_time, \
-  twitter_interaction, \
-  play_music, \
-  weather
+import importlib
+import pkgutil
+import sqlite3
+import sys
+import os
 
-def brain(profile_data, speech_text):
-    def check_message(check):
-        """
-        This function checks if the items in the list (specified in argument) are present in the user's input speech.
-        """
+# Melissa
+import profile
+import words_db
 
-        words_of_message = speech_text.split()
-        if set(check).issubset(set(words_of_message)):
-            return True
+order_match_factor = 1.5
+
+def query(text):
+    """
+    Processes the text against the words.sqlite DB to identify
+    which module and function can be best applied.
+
+    Arguments:
+    text -- user input, typically speech
+    """
+
+    text_list = text.split() # Make a list of expression words
+
+    # Make a list of lists where each sublist has an expression
+    # word and its sequence in the expression.
+    zlist = zip(text_list, list(range(len(text_list))))
+    # print zlist
+
+    # Clear the expression table for each new user expression.
+    words_db.cur.execute('DELETE FROM expression')
+
+    # Insert expression words in to SQLite. A word may appear more
+    # than once in the expression. Only the first occurence will
+    # be kept. 
+    words_db.cur.executemany("INSERT OR IGNORE INTO expression "
+                             "values (?,?)", zlist)
+    words_db.con.commit()
+
+    # Match multiple-word groups against the expression words.
+    sql = "SELECT e.word, e.word_order, "\
+         +"  g.word_group, g.word_count, g.function "\
+         +"FROM expression e "\
+         +"JOIN words w "\
+         +"ON w.word = e.word "\
+         +"JOIN word_groups g "\
+         +"ON g.word_group = w.word_group "\
+         +"WHERE g.word_count > 1 "\
+         +"ORDER BY e.word_order, g.word_group"
+    # print sql
+    words_db.cur.execute(sql)
+    rows = words_db.cur.fetchall()
+    # print rows
+
+    scoring = {}
+    for row in rows:
+        # print row
+        if not row[2] in scoring:
+            # If the word_group is not already in the scoring
+            # dictionary ...
+
+            # Split word_group on spaces into a list.
+            group_list = row[2].split()
+
+            # If the row word is the first word in the group_list
+            # set order to 1. 'order' checks to see if the words
+            # in the word_group are matched in expression order.
+            order = 1 if row[0] == group_list[0] else 0
+            scoring[row[2]] = {
+                'group': group_list,
+                'score': 0.0,
+                'count': row[3],
+                'matched': 1,
+                'order': order,
+                'function': row[4]}
         else:
-            return False
+            # Update word_group already in the dictionary for
+            # total words in the matched group.
+            scoring_row = scoring[row[2]]
+            scoring_row['matched'] += 1
 
-    if check_message(['who','are', 'you']):
-        general_conversations.who_are_you(profile_data)
+            # And if the row word matches the next group word in 
+            # order, add 1 to order.
+            if row[0] ==\
+                scoring_row['group'][scoring_row['order']]:
+                scoring_row['order'] += 1
 
-    elif check_message(['tweet']):
-        twitter_interaction.post_tweet(
-            speech_text,
-            profile_data['twitter']['consumer_key'],
-            profile_data['twitter']['consumer_secret'],
-            profile_data['twitter']['access_token'],
-            profile_data['twitter']['access_token_secret'])
+    # Score the word_groups according to the assembled match
+    # results.
+    top_scores = []
+    for key, fields in scoring.iteritems():
+        # A word_group can only enter scoring when all the words
+        # in the group were matched. 
+        if fields['matched'] == fields['count']:
+            score = fields['count'] # Default score
 
-    elif check_message(['business', 'news']):
-        business_news_reader.news_reader()
+            # Give a greater score if all the words in the group
+            # where matched in order.
+            if fields['order'] == fields['count']:
+                score = fields['count'] * order_match_factor
 
-    elif check_message(['how', 'i', 'look']) \
-      or check_message(['how', 'am', 'i']):
-        general_conversations.how_am_i()
+            # print score
+            # If this word_group score is greater-than or equal-to
+            # the current best score, prepend it to the top_scores
+            # list.
+            if len(top_scores) == 0 or score >= top_scores[0][1]:
+                top_scores.insert(0,[key, score, 
+                                     fields['function']])
+            # else bypass
 
-    elif check_message(['all', 'note']) \
-      or check_message(['all', 'notes']) \
-      or check_message(['notes']):
-        notes.show_all_notes()
+    if len(top_scores) > 0:
+        if len(top_scores) > 1 \
+        and top_scores[0][1] == top_scores[1][1]:
+            # If there is more than one of the same best score,
+            # use a function's priority to choose between them.
 
-    elif check_message(['note']):
-        notes.note_something(speech_text)
+            # Assemble a comma-separated string of the function
+            # names to be used in the SELECT below to get the
+            # priorities.
+            top_score = top_scores[0][1]
+            function_str = "'"+top_scores[0][2]+"'"
+            for pos in range(1, len(top_scores)):
+                if top_scores[pos][1] != top_score:
+                    break
+                function_str += ",'"+top_scores[pos][2]+"'"
 
-    elif check_message(['define']):
-        define_subject.define_subject(speech_text)
+            # print 'function_str: '+function_str
+            qry = "SELECT function, priority "\
+                 +"FROM functions "\
+                 +"WHERE function IN ("+function_str+") "\
+                 +"ORDER BY priority"
 
-    elif check_message(['tell', 'joke']):
-        general_conversations.tell_joke()
+            # print qry
+            words_db.cur.execute(qry)
+            rows = words_db.cur.fetchall()
+            # print rows
 
-    elif check_message(['who', 'am', 'i']):
-        general_conversations.who_am_i(profile_data)
+            # If the priorities of the first two rows are
+            # different we have one best priority.
+            if rows[0][1] != rows[1][1]:
+                print "Best priority function found: "+rows[0][0]
 
-    elif check_message(['where', 'born']):
-        general_conversations.where_born()
+            # Otherwise there is more then one function with the
+            # best priority. Choose the first returned and list
+            # the functions having the same best priority.
+            else:
+                print "\nThe first function in the following "\
+                     +"having equal\n"\
+                     +"priorities has been selected.\n"\
+                     +"----------------------------------"
+                best_priority = rows[0][1]
+                for pos in range(0, len(rows)):
+                    if rows[pos][1] != best_priority:
+                        break;
+                    print 'function: ('+rows[pos][0]\
+                        +')  priority: '+str(rows[pos][1])
 
-    elif check_message(['how', 'are', 'you']):
-        general_conversations.how_are_you()
+            print "Run function " + rows[0][0]
+            module_name, function = rows[0][0].split()
+            # run function
+            getattr(words_db.modules[module_name], function)(text)
 
-    elif check_message(['party', 'time']) \
-      or check_message(['party', 'mix']):
-        play_music.play_shuffle(profile_data['music_path'])
-
-    elif check_message(['play', 'music']) \
-      or check_message(['music']):
-        play_music.play_random(profile_data['music_path'])
-
-    elif check_message(['play']):
-        play_music.play_specific_music(
-            speech_text,
-            profile_data['music_path'])
-
-    elif check_message(['how', 'weather']) \
-      or check_message(['hows', 'weather']):
-        weather.weather(
-            profile_data['city_name'],
-            profile_data['city_code'])
-
-    elif check_message(['time']):
-        tell_time.what_is_time()
-
-    elif check_message(['upload']):
-        imgur_handler.image_uploader(
-            speech_text,
-            profile_data['imgur']['client_id'],
-            profile_data['imgur']['client_secret'],
-            profile_data['images_path'])
-
-    elif check_message(['all', 'uploads']) \
-      or check_message(['all', 'images']) \
-      or check_message(['uploads']):
-        imgur_handler.show_all_uploads()
-
-    elif check_message(['feeling', 'angry']):
-        lighting.feeling_angry()
-
-    elif check_message(['feeling', 'creative']):
-        lighting.feeling_creative()
-
-    elif check_message(['feeling', 'lazy']):
-        lighting.feeling_lazy()
-
-    elif check_message(['dark']):
-        lighting.very_dark()
-
-    elif check_message(['lights', 'off']):
-        lighting.turn_off()
-
-    elif check_message(['sleep']):
-        sleep.go_to_sleep()
+        else:
+            # print top_scores[0]
+            print "Run function '%s' \nfor word_group '%s' \nhaving score %4.2f"\
+                  % (top_scores[0][2], top_scores[0][0],
+                     top_scores[0][1])
+            module_name, function = top_scores[0][2].split()
+            # run function
+            getattr(words_db.modules[module_name], function)(text)
 
     else:
-        general_conversations.undefined()
+        # If there are no matched multiple-word groups, get a
+        # function with the greatest number of single word
+        # matches.
+        sql = "SELECT g.function, count(*) as words_matched, "\
+             +"    f.priority "\
+             +"FROM expression e "\
+             +"JOIN words w "\
+             +"ON w.word = e.word "\
+             +"JOIN word_groups g "\
+             +"ON g.word_group = w.word_group "\
+             +"JOIN functions f "\
+             +"ON g.function = f.function "\
+             +"WHERE g.word_count = 1 "\
+             +"GROUP BY g.function "\
+             +"ORDER BY word_count DESC, f.priority, g.function"
+        # print sql
+        words_db.cur.execute(sql)
+        rows = words_db.cur.fetchall()
+        if len(rows) == 1:
+            print "Run function: '%s'  words : %d  priority: %d" \
+                  % (rows[0][0], rows[0][1], rows[0][2])
+            module_name, function = rows[0][0].split()
+            # run function
+            getattr(words_db.modules[module_name], function)(text)
+
+        elif len(rows) > 1:
+            if rows[0][1] == rows[1][1] \
+            and rows[0][2] == rows[1][2]:
+                count = rows[0][1]
+                priority = rows[0][2]
+                print "These functions tied for best individual\n"\
+                     +"word match count.\n"\
+                     +"----------------------------------"
+                for pos in range(0, len(rows)):
+                    if rows[pos][1] != count \
+                    or rows[pos][2] != priority:
+                        break
+                    print "function: '%s'  words : %d  priority: %d"\
+                           % (rows[pos][0], rows[pos][1],
+                              rows[pos][2])
+
+            print "Run function " + rows[0][0]
+            module_name, function = rows[0][0].split()
+            # run function
+            getattr(words_db.modules[module_name], function)(text)
+
+        else:
+            # If there are no single word or multiple word matches,
+            # provide the 'I dont know what that means!' message.
+            getattr(words_db.modules['general_conversations'],
+                    'undefined')('')
 
