@@ -9,6 +9,7 @@ import profile
 
 con = 0
 cur = 0
+modules = {}
 
 def create_words_db(con, cur):
 
@@ -139,15 +140,14 @@ def insert_words(con, cur, name, words, priority):
                             +"values ('{w}','{wg}',{seq})"
                             .format(w=word, wg=word_group_string,
                                     seq=order))
+        con.commit()
 
     else:
         print "Invalid WORDS type '%s' for module %s"\
             % type(words), name
 
-    con.commit()
-
 def assemble_words_db():
-    global con, cur
+    global con, cur, modules
     try:
         if profile.data['words_db_file'] != ':memory:' \
         and os.path.exists(profile.data['words_db_file']):
@@ -180,6 +180,7 @@ def assemble_words_db():
 
             if hasattr(mod, 'WORDS'):
                 insert_words(con, cur, name, mod.WORDS, priority)
+                modules[name] = mod
 
             else:
                 print 'WARNING: Module will not be used.'

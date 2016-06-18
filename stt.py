@@ -16,10 +16,9 @@ except:
 # Melissa
 import profile
 from tts import tts
-from brain import Brain
+import brain
 
 def stt():
-    brain = Brain();
     r = sr.Recognizer()
     tts('Hello' + profile.data['name'] + ', systems are now ready to run. How can I help you?')
     if profile.data['stt'] == 'google':
@@ -80,5 +79,4 @@ def stt():
     elif profile.data['stt'] == 'keyboard':
         while True:
             keyboard_text = raw_input('Enter your query: ')
-            brain.query(keyboard_text
-)
+            brain.query(keyboard_text)
