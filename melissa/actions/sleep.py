@@ -6,4 +6,4 @@ WORDS = {'go_to_sleep': {'groups': ['sleep','bye','exit','stop','close',
 
 def go_to_sleep(text):
     tts('Goodbye! Have a great day!')
-    quit()
+

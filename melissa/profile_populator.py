@@ -1,9 +1,27 @@
 import os
 import json
 from getpass import getpass
+import sys
+import subprocess
 
-# Melissa
-from tts import tts
+
+def tts(message):
+    """
+    This function takes a message as an argument and converts it to
+    speech depending on the OS.
+
+    This is a copy of tts.py without the gender code that depends on
+    the profile data collected here.
+    """
+    if sys.platform == 'darwin':
+        tts_engine = 'say'
+        return subprocess.call([tts_engine, message])
+
+    elif sys.platform.startswith('linux') or sys.platform == 'win32':
+        tts_engine = 'espeak'
+        speed = '-s170'
+        return subprocess.call([tts_engine, speed, message])
+
 
 def profile_populator():
     def empty(variable):
@@ -12,7 +30,7 @@ def profile_populator():
         else:
             return True
 
-    # tts('Welcome to Melissa. Let us generate your profile!')
+    tts('Welcome to Melissa. Let us generate your profile!')
     print('Welcome to Melissa. Let us generate your profile!')
     print('Press Enter for using default values.')
 
@@ -143,3 +161,4 @@ def profile_populator():
 
     with open('profile.json', 'w') as outfile:
         json.dump(profile_data, outfile, indent=4)
+

@@ -11,6 +11,7 @@ import actions_db
 
 order_match_factor = 1.5
 
+
 def query(text):
     """
     Processes the text against the words.sqlite DB to identify
@@ -33,18 +34,18 @@ def query(text):
     # than once in the expression. Only the first occurence will
     # be kept. 
     actions_db.cur.executemany("INSERT OR IGNORE INTO expression "
-                             "values (?,?)", zlist)
+                               "values (?,?)", zlist)
     actions_db.con.commit()
 
     # Match multiple-word groups against the expression words.
-    sql = "SELECT e.word, e.word_order, "\
-         +"  g.word_group, g.word_count, g.function "\
-         +"FROM expression e "\
-         +"JOIN words w "\
-         +"ON w.word = e.word "\
-         +"JOIN word_groups g "\
-         +"ON g.word_group = w.word_group "\
-         +"WHERE g.word_count > 1 "\
+    sql = "SELECT e.word, e.word_order, " \
+         +"  g.word_group, g.word_count, g.function " \
+         +"FROM expression e " \
+         +"JOIN words w " \
+         +"ON w.word = e.word " \
+         +"JOIN word_groups g " \
+         +"ON g.word_group = w.word_group " \
+         +"WHERE g.word_count > 1 " \
          +"ORDER BY e.word_order, g.word_group"
 
     actions_db.cur.execute(sql)
@@ -83,7 +84,7 @@ def query(text):
 
             # And if the row word matches the next group word in 
             # order, add 1 to order.
-            if sql_row.word ==\
+            if sql_row.word == \
                 scoring_row['group'][scoring_row['order']]:
                 scoring_row['order'] += 1
 
@@ -97,7 +98,7 @@ def query(text):
             score = fields['count'] # Default score
 
             # Give a greater score if all the words in the group
-            # where matched in order.
+            # were matched in order.
             if fields['order'] == fields['count']:
                 score = fields['count'] * order_match_factor
 
@@ -125,9 +126,10 @@ def query(text):
                     break
                 function_str += ",'"+top_scores[pos]['function']+"'"
 
-            qry = "SELECT function, priority "\
-                 +"FROM functions "\
-                 +"WHERE function IN ("+function_str+") "\
+            qry = "SELECT function, priority, threaded, " \
+                 +"    returns, silent " \
+                 +"FROM functions " \
+                 +"WHERE function IN ("+function_str+") " \
                  +"ORDER BY priority"
 
             actions_db.cur.execute(qry)
@@ -135,87 +137,97 @@ def query(text):
 
             # If the priorities of the first two rows are
             # different we have one best priority.
-            if rows[0][1] != rows[1][1]:
-                print "Best priority function found: "+rows[0][0]
+            # if rows[0][1] != rows[1][1]:
+            #     print "Best priority function found: "+rows[0][0]
 
             # Otherwise there is more then one function with the
             # best priority. Choose the first returned and list
             # the functions having the same best priority.
-            else:
-                print "\nThe first function in the following "\
-                     +"having equal\n"\
-                     +"priorities has been selected.\n"\
+            # else:
+            if rows[0][1] == rows[1][1]:
+                print "\nThe first function in the following " \
+                     +"having equal\n" \
+                     +"priorities has been selected.\n" \
                      +"----------------------------------"
                 best_priority = rows[0][1]
                 for pos in range(0, len(rows)):
                     if rows[pos][1] != best_priority:
                         break;
-                    print 'function: ('+rows[pos][0]\
+                    print 'function: ('+rows[pos][0] \
                         +')  priority: '+str(rows[pos][1])
 
-            print "Run function " + rows[0][0]
             module_name, function = rows[0][0].split()
-            # run function
-            getattr(actions_db.modules[module_name], function)(text)
+            properties = dict(zip(('threaded','returns','silent'), rows[0][2:]))
+            return (module_name, function, properties)
 
         else:
-            print "Run function '%s' \nfor word_group '%s' \nhaving score %4.2f"\
-                  % (top_scores[0][2], top_scores[0][0],
-                     top_scores[0][1])
-            module_name, function = top_scores[0][2].split()
-            # run function
-            getattr(actions_db.modules[module_name], function)(text)
+            # Get function properties
+            qry = "SELECT threaded, returns, silent " \
+                 +"FROM functions " \
+                 +"WHERE function = '"+top_scores[0]['function']+"'"
+
+            actions_db.cur.execute(qry)
+            row = actions_db.cur.fetchone()
+            module_name, function = top_scores[0]['function'].split()
+            properties = dict(zip(('threaded','returns','silent'), row[0:]))
+            return (module_name, function, properties)
 
     else:
         # If there are no matched multiple-word groups, get a
         # function with the greatest number of single word
         # matches.
-        sql = "SELECT g.function, count(*) as words_matched, "\
-             +"    f.priority "\
-             +"FROM expression e "\
-             +"JOIN words w "\
-             +"ON w.word = e.word "\
-             +"JOIN word_groups g "\
-             +"ON g.word_group = w.word_group "\
-             +"JOIN functions f "\
-             +"ON g.function = f.function "\
-             +"WHERE g.word_count = 1 "\
-             +"GROUP BY g.function "\
+        sql = "SELECT g.function, count(*) as words_matched, " \
+             +"    f.priority, f.threaded, f.returns, f.silent " \
+             +"FROM expression e " \
+             +"JOIN words w " \
+             +"ON w.word = e.word " \
+             +"JOIN word_groups g " \
+             +"ON g.word_group = w.word_group " \
+             +"JOIN functions f " \
+             +"ON g.function = f.function " \
+             +"WHERE g.word_count = 1 " \
+             +"GROUP BY g.function " \
              +"ORDER BY word_count DESC, f.priority, g.function"
 
         actions_db.cur.execute(sql)
         rows = actions_db.cur.fetchall()
         if len(rows) == 1:
-            print "Run function: '%s'  words : %d  priority: %d" \
-                  % (rows[0][0], rows[0][1], rows[0][2])
+            # print "Run function: '%s'  words : %d  priority: %d" \
+            #       % (rows[0][0], rows[0][1], rows[0][2])
             module_name, function = rows[0][0].split()
-            # run function
-            getattr(actions_db.modules[module_name], function)(text)
+            properties = dict(zip(('threaded','returns','silent'), rows[0][3:]))
+            return (module_name, function, properties)
 
         elif len(rows) > 1:
             if rows[0][1] == rows[1][1] \
             and rows[0][2] == rows[1][2]:
                 count = rows[0][1]
                 priority = rows[0][2]
-                print "These functions tied for best individual\n"\
-                     +"word match count.\n"\
+                print "These functions tied for best individual\n" \
+                     +"word match count.\n" \
                      +"----------------------------------"
                 for pos in range(0, len(rows)):
                     if rows[pos][1] != count \
                     or rows[pos][2] != priority:
                         break
-                    print "function: '%s'  words : %d  priority: %d"\
+                    print "function: '%s'  words : %d  priority: %d" \
                            % (rows[pos][0], rows[pos][1],
                               rows[pos][2])
 
-            print "Run function " + rows[0][0]
             module_name, function = rows[0][0].split()
-            # run function
-            getattr(actions_db.modules[module_name], function)(text)
+            properties = dict(zip(('threaded','returns','silent'), rows[0][3:]))
+            return (module_name, function, properties)
 
         else:
             # If there are no single word or multiple word matches,
             # provide the 'I dont know what that means!' message.
-            getattr(actions_db.modules['general_conversations'],
-                    'undefined')('')
+
+            qry = "SELECT threaded, returns, silent " \
+                 +"FROM functions " \
+                 +"WHERE function = 'general_conversations undefined'"
+
+            actions_db.cur.execute(qry)
+            row = actions_db.cur.fetchone()
+            properties = dict(zip(('threaded','returns','silent'), row[0:]))
+            return ('general_conversations', 'undefined', properties)
 

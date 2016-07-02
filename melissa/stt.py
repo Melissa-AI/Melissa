@@ -1,46 +1,49 @@
-# Change to class, check Jasper.
-# Put in test for OK import of pocketsphinx when it is being used.
-#   See Jasper method.
-# Select either Google or pocketsphinx as in Jasper
-#   without using an if statement.
+# Inspired by stt from the Jasper project http://jasperproject.github.io/
 
 import os
 import speech_recognition as sr
-
-try:
-    from pocketsphinx.pocketsphinx import *
-    from sphinxbase.sphinxbase import *
-except:
-    pass
+from abc import ABCMeta, abstractmethod
 
 # Melissa
 import profile
-from tts import tts
-import brain
 
-def stt():
-    va_name = profile.data['va_name']
-    r = sr.Recognizer()
-    tts('Hello' + profile.data['name'] + ', systems are now ready to run. How can I help you?')
-    if profile.data['stt'] == 'google':
-        while True:
-            with sr.Microphone() as source:
-                r.adjust_for_ambient_noise(source)
-                print("Say something!")
-                audio = r.listen(source)
-                print("after listen")
-            try:
-                speech_text = r.recognize_google(audio).lower().replace("'", "")
-                print(va_name + " thinks you said '" + speech_text + "'")
-            except sr.UnknownValueError:
-                print(va_name + " could not understand audio")
-            except sr.RequestError as e:
-                print("Could not request results from Google Speech Recognition service; {0}".format(e))
-            else:
-                brain.query(speech_text)
+if profile.data['stt'] == 'sphinx':
+    try:
+        from pocketsphinx.pocketsphinx import *
+        from sphinxbase.sphinxbase import *
+    except:
+        print 'Error: Could not import pocketsphinx'
+        quit()
 
-    elif profile.data['stt'] == 'sphinx':
 
+class base_stt(object):
+    """
+    Generic base class for all STT engines
+    """
+
+    __metaclass__ = ABCMeta
+
+    @classmethod
+    def get_instance(cls):
+        return cls()
+
+    @abstractmethod
+    def transcribe(self):
+        pass
+
+
+class pocketsphinx_stt(base_stt):
+    """
+    """
+
+    NAME = 'sphinx'
+
+    def __init__(self):
+
+        """
+        Initiates the pocketsphinx instance.
+        """
+        self.r = sr.Recognizer()
         modeldir = profile.data['pocketsphinx']['modeldir']
         hmm = profile.data['pocketsphinx']['hmm']
         lm = profile.data['pocketsphinx']['lm']
@@ -51,33 +54,96 @@ def stt():
         config.set_string('-lm', os.path.join(modeldir, lm))
         config.set_string('-dict', os.path.join(modeldir, dic))
         config.set_string('-logfn', '/dev/null')
-        decoder = Decoder(config)
+        self.decoder = Decoder(config)
 
-        def sphinx_stt():
-            stream = open('recording.wav', 'rb')
-            stream.seek(44) # bypasses wav header
+    def decode(self):
+        stream = open('recording.wav', 'rb')
+        stream.seek(44) # bypasses wav header
 
-            data = stream.read()
-            decoder.start_utt()
-            decoder.process_raw(data, False, True)
-            decoder.end_utt()
+        data = stream.read()
+        self.decoder.start_utt()
+        self.decoder.process_raw(data, False, True)
+        self.decoder.end_utt()
 
-            speech_text = decoder.hyp().hypstr
-            print(va_name + " thinks you said '" + speech_text + "'")
-            return speech_text.lower().replace("'", "")
+        speech_text = self.decoder.hyp().hypstr
+        print(profile.data['va_name'] + " thinks you said '"
+              + speech_text + "'")
+        return speech_text.lower().replace("'", "")
 
-        while True:
-            with sr.Microphone() as source:
-                r.adjust_for_ambient_noise(source)
-                print("Say something!")
-                audio = r.listen(source)
+    def transcribe(self):
+        with sr.Microphone() as source:
+            self.r.adjust_for_ambient_noise(source)
+            print("Say something!")
+            audio = self.r.listen(source)
 
-            with open("recording.wav", "wb") as f:
-                f.write(audio.get_wav_data())
+        with open("recording.wav", "wb") as f:
+            f.write(audio.get_wav_data())
 
-            brain.query(sphinx_stt())
+        return self.decode()
 
-    elif profile.data['stt'] == 'keyboard':
-        while True:
-            keyboard_text = raw_input('Enter your query: ')
-            brain.query(keyboard_text)
+
+class google_stt(base_stt):
+    """
+    Google Speech-To-Text implementation.
+    """
+
+    NAME = 'google'
+
+    def __init__(self):
+        self.r = sr.Recognizer()
+
+    def transcribe(self):
+        with sr.Microphone() as source:
+            self.r.adjust_for_ambient_noise(source)
+            print("Say something!")
+            audio = self.r.listen(source)
+
+        try:
+            speech_text = self.r.recognize_google(audio).lower().replace("'", "")
+            print(profile.data['va_name'] + " thinks you said '"
+                  + speech_text + "'")
+
+        except sr.UnknownValueError:
+            print(profile.data['va_name']
+                  + " could not understand audio")
+
+        except sr.RequestError as e:
+            print("Could not request results from Google Speech Recognition service; {0}".format(e))
+
+        else:
+            return speech_text
+
+
+def get_engine_by_name(name=None):
+    """
+    Select an STT engine (class) using the NAME attribute in the STT
+    classes.
+    """
+
+    if not name or type(name) is not str:
+        raise TypeError("Invalid STT name '%s'", name)
+
+    selected_engines = filter(lambda engine: hasattr(engine, "NAME") and
+                              engine.NAME == name, get_engines())
+
+    if len(selected_engines) == 0:
+        raise ValueError("No STT engine found for name '%s'" % name)
+    else:
+        if len(selected_engines) > 1:
+            print(("WARNING: Multiple STT engines found for name '%s'. " +
+                   "This is most certainly a bug.") % name)
+
+        return selected_engines[0]
+
+
+def get_engines():
+    def get_subclasses(cls):
+        subclasses = set()
+        for subclass in cls.__subclasses__():
+            subclasses.add(subclass)
+        return subclasses
+
+    return [stt_engine for stt_engine in
+            list(get_subclasses(base_stt))
+            if hasattr(stt_engine, 'NAME') and stt_engine.NAME]
+

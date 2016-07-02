@@ -4,7 +4,8 @@ import random
 from melissa import profile
 from melissa.tts import tts
 
-WORDS={'who_are_you': {'groups': [['who', 'are', 'you']]},
+WORDS={'who_are_you': {'groups': [['who', 'are', 'you'],
+                                  ['what', 'your', 'name']]},
        'how_am_i': {'groups': [['how', 'i', 'look'],['how', 'am', 'i']]},
        'tell_joke': {'groups': [['tell', 'joke']]},
        'who_am_i': {'groups': [['who', 'am', 'i']]},

@@ -11,13 +11,13 @@ con = 0
 cur = 0
 modules = {}
 
-def create_actions_db(con, cur):
 
+def create_actions_db():
     try:
         cur.executescript("""
-            CREATE TABLE synonyms (
-              synonym varchar(50) PRIMARY KEY,
-              word varchar(50)
+            CREATE TABLE expression (
+              word varchar(50) PRIMARY KEY,
+              word_order integer
             );
 
             CREATE TABLE words (
@@ -38,12 +38,15 @@ def create_actions_db(con, cur):
 
             CREATE TABLE functions (
               function varchar(255) PRIMARY KEY,
-              priority integer
+              threaded tinyint,
+              returns tinyint,
+              silent tinyint,
+              priority integer DEFAULT 0
             );
 
-            CREATE TABLE expression (
-              word varchar(50) PRIMARY KEY,
-              word_order integer
+            CREATE TABLE notifications (
+              function varchar(255) PRIMARY KEY,
+              poll_period integer
             );
             """)
         con.commit()
@@ -54,51 +57,53 @@ def create_actions_db(con, cur):
 
     return True
 
-def insert_words(con, cur, name, words, priority):
 
-    # Jasper format, each word in list is a word_group
-    if type(words) == type([]): # if words is a list
+def insert_words(name, words, priority):
 
-        function_name = name+' '+'handle'
-        try:
-          cur.execute(
-              "INSERT INTO functions (function, priority) "
-              +"values ('{fn}',{p})"
-              .format(fn=function_name, p=priority))
+    for function_name, fields in words.iteritems():
+        function_name = name+' '+function_name
 
-        except sqlite3.Error, err:
-            print "Error %s:" % err.args[0]
-            sys.exit(1)
+        if 'notification' in fields:
+            if not 'poll_period' in fields:
+                print "A poll_period is required for notifications " \
+                      +function_name
+                sys.exit(1)
+            poll_period = int(fields['priority'])
 
-        for word in words:
-            word = word.lower()
-            cur.execute(
-                "INSERT INTO words (word, word_group, word_order) "
-                +"values ('{w}','{wg}',{seq})"
-                .format(w=word, wg=word, seq=0))
-
-            cur.execute(
-                "INSERT INTO word_groups "
-                +"(word_group, function, word_count) "
-                +"values ('{wg}','{fn}',{cnt})"
-                .format(wg=word, fn=function_name, cnt=1))
-
-        con.commit()
-
-    # Melissa format, dictionary of function name
-    # and list of word match groups (lists)
-    elif type(words) == type({}): # if words is a dictionary
-
-        for function_name, fields in words.iteritems():
-
-            function_name = name+' '+function_name
-            priority = fields['priority'] if 'priority' in fields \
-                                          else 0
             try:
                 cur.execute(
-                    "INSERT INTO functions (function, priority) "
-                    +"values ('{fn}',{p})"\
-                    .format(fn=function_name, p=priority))
+                    "INSERT INTO notifications (function, "
+                    +"poll_period) values ('{fn}',{pp})"
+                    .format(fn=function_name, pp=poll_period))
+
+            except sqlite3.Error, err:
+                print "Error %s:" % err.args[0]
+                sys.exit(1)
+
+        else: # An action function
+            priority = 0
+            if 'priority' in fields:
+                int(fields['priority'])
+
+            threaded = 0
+            returns = 0
+            silent = 0
+            if 'properties' in fields:
+                properties = fields['properties']
+                if 'threaded' in properties:
+                    threaded = 1
+                if 'returns' in properties:
+                    returns = 1
+                if 'silent' in properties:
+                    silent = 1
+
+            try:
+                cur.execute(
+                    "INSERT INTO functions "
+                   +"(function, priority, threaded, returns, silent) "
+                   +"values ('{fn}',{p},{t},{r},{s})"
+                   .format(fn=function_name, p=priority, t=threaded,
+                           r=returns, s=silent))
 
             except sqlite3.Error, err:
                 print "Error %s:" % err.args[0]
@@ -142,9 +147,6 @@ def insert_words(con, cur, name, words, priority):
                                     seq=order))
         con.commit()
 
-    else:
-        print "Invalid WORDS type '%s' for module %s"\
-            % type(words), name
 
 def assemble_actions_db():
     global con, cur, modules
@@ -161,7 +163,7 @@ def assemble_actions_db():
         print "Error %s:" % e.args[0]
         sys.exit(1)
 
-    if create_actions_db(con, cur):
+    if create_actions_db():
         print 'Successfully Created '+profile.data['actions_db_file']
 
     package = importlib.import_module(profile.data['modules'])
@@ -178,14 +180,13 @@ def assemble_actions_db():
             priority = mod.PRIORITY if hasattr(mod, 'PRIORITY') else 0
 
             if hasattr(mod, 'WORDS'):
-                insert_words(con, cur, name, mod.WORDS, priority)
+                insert_words(name, mod.WORDS, priority)
                 modules[name] = mod
 
             else:
                 print 'WARNING: Module will not be used.'
                 print '    WORDS not found for module ' + name
 
-    # con.close()
 
 if con == 0:
     assemble_actions_db()
