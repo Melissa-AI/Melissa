@@ -12,6 +12,8 @@ WORDS={'who_are_you': {'groups': [['who', 'are', 'you']]},
        'where_born': {'groups': [['where', 'born']]},
        'how_are_you': {'groups': [['how', 'are', 'you']]},
        'are_you_up': {'groups': [['you', 'up']]},
+       'i_love_you': {'groups': [['i', 'love', 'you']]},
+       'will_you_marry': {'groups': [['will', 'you', 'marry', 'me']]},
        'undefined': {'groups': []},
       }
 
@@ -45,6 +47,13 @@ def how_are_you(text):
 
 def are_you_up(text):
     tts('For you sir, always.')
+
+def i_love_you(text):
+    replies = ['I have a boyfriend.', 'You are looking for love in wrong place.']
+    tts(random.choice(replies))
+
+def will_you_marry(text):
+    tts('I have been receiving a lot of marriage proposals recently.')
 
 def undefined(text):
     tts('I dont know what that means!')
