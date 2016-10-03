@@ -156,10 +156,9 @@ def query(text):
 
         else:
             print top_scores
-            print "Run function '%s' \nfor word_group '%s'" +
-            " \nhaving score %4.2f"\
-                % (top_scores[0]['function'], top_scores[0]['word_group'],
-                    top_scores[0]['score'])
+            print "Run function " + str(top_scores[0]['function'])
+            print "for word_group " + str(top_scores[0]['word_group'])
+            print "having score %4.2f" % top_scores[0]['score']
             module_name, function = top_scores[0]['function'].split()
             # run function
             getattr(actions_db.modules[module_name], function)(text)
