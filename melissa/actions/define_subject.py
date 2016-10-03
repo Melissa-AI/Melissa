@@ -5,7 +5,8 @@ import wikipedia
 from melissa.tts import tts
 
 WORDS = {'define_subject': {'groups': ['define']}
-        }
+         }
+
 
 def define_subject(speech_text):
     words_of_message = speech_text.split()
@@ -30,4 +31,5 @@ def define_subject(speech_text):
         tts(wiki_data)
     except wikipedia.exceptions.DisambiguationError as e:
         tts('Can you please be more specific? You may choose something from the following.')
-        print("Can you please be more specific? You may choose something from the following; {0}".format(e))
+        print(
+            "Can you please be more specific? You may choose something from the following; {0}".format(e))

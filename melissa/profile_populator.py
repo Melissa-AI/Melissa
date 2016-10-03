@@ -4,6 +4,7 @@ import subprocess
 import json
 from getpass import getpass
 
+
 def tts_local(message):
     if sys.platform == 'darwin':
         tts_engine = 'say'
@@ -12,6 +13,7 @@ def tts_local(message):
         tts_engine = 'espeak'
         speed = '-s170'
         return subprocess.call([tts_engine, speed, message])
+
 
 def profile_populator():
     def empty(variable):
@@ -45,8 +47,9 @@ def profile_populator():
         name = 'Tanay'
 
     while(True):
-        stt = raw_input('STT Engine ((g)oogle/(s)phinx/(t)elegram/(k)eyboard): ').lower()
-        if stt in ('g','google', 's','sphinx', 'k','keyboard', 't', 'telegram', ''):
+        stt = raw_input(
+            'STT Engine ((g)oogle/(s)phinx/(t)elegram/(k)eyboard): ').lower()
+        if stt in ('g', 'google', 's', 'sphinx', 'k', 'keyboard', 't', 'telegram', ''):
             if empty(stt) or stt == 'g':
                 stt = 'google'
             elif stt == 's':
@@ -90,7 +93,7 @@ def profile_populator():
 
     while(True):
         degrees = raw_input('(c)elsius/(f)ahrenheit): ').lower()
-        if degrees in ('c','celsius', 'f','fahrenheit', ''):
+        if degrees in ('c', 'celsius', 'f', 'fahrenheit', ''):
             if empty(degrees) or degrees == 'c':
                 degrees = 'celsius'
             elif degrees == 'f':
@@ -103,7 +106,8 @@ def profile_populator():
     if len(gmail_address) > 0:
         gmail_password = getpass()
 
-    icloud_username = raw_input('Enter your icloud username/address (???@???.com): ')
+    icloud_username = raw_input(
+        'Enter your icloud username/address (???@???.com): ')
     icloud_password = ''
     if len(icloud_username) > 0:
         icloud_password = getpass()
