@@ -4,6 +4,7 @@ import subprocess
 import json
 from getpass import getpass
 
+
 def tts_local(message):
     if sys.platform == 'darwin':
         tts_engine = 'say'
@@ -12,6 +13,7 @@ def tts_local(message):
         tts_engine = 'espeak'
         speed = '-s170'
         return subprocess.call([tts_engine, speed, message])
+
 
 def profile_populator():
     def empty(variable):
@@ -28,7 +30,7 @@ def profile_populator():
     if empty(va_name):
         va_name = 'Melissa'
 
-    while(True):
+    while True:
         va_gender = raw_input('What is my gender ((m)ale/(f)emale)?: ')
         if va_gender in ('male', 'm', 'female', 'f', ''):
             if empty(va_gender):
@@ -44,9 +46,9 @@ def profile_populator():
     if empty(name):
         name = 'Tanay'
 
-    while(True):
+    while True:
         stt = raw_input('STT Engine ((g)oogle/(s)phinx/(t)elegram/(k)eyboard): ').lower()
-        if stt in ('g','google', 's','sphinx', 'k','keyboard', 't', 'telegram', ''):
+        if stt in ('g', 'google', 's', 'sphinx', 'k', 'keyboard', 't', 'telegram', ''):
             if empty(stt) or stt == 'g':
                 stt = 'google'
             elif stt == 's':
@@ -62,7 +64,7 @@ def profile_populator():
     if empty(telegram_username):
         telegram_username = 'tanay1337'
 
-    while(True):
+    while True:
         music_path = raw_input('Path to your music directory: ')
         if empty(music_path):
             music_path = '.'
@@ -71,7 +73,7 @@ def profile_populator():
             break
         print('Invalid input, please enter a valid directory path or <ENTER>.')
 
-    while(True):
+    while True:
         images_path = raw_input('Path to your images directory: ')
         if empty(images_path):
             images_path = '.'
@@ -88,9 +90,9 @@ def profile_populator():
     if empty(city_code):
         city_code = 'INXX0096'
 
-    while(True):
+    while True:
         degrees = raw_input('(c)elsius/(f)ahrenheit): ').lower()
-        if degrees in ('c','celsius', 'f','fahrenheit', ''):
+        if degrees in ('c', 'celsius', 'f', 'fahrenheit', ''):
             if empty(degrees) or degrees == 'c':
                 degrees = 'celsius'
             elif degrees == 'f':

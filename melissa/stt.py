@@ -9,6 +9,7 @@ import time
 import speech_recognition as sr
 
 import telepot
+
 try:
     from pocketsphinx.pocketsphinx import *
     from sphinxbase.sphinxbase import *
@@ -19,6 +20,7 @@ except:
 import profile
 from tts import tts
 import brain
+
 
 def stt():
     va_name = profile.data['va_name']
@@ -56,7 +58,7 @@ def stt():
 
         def sphinx_stt():
             stream = open('recording.wav', 'rb')
-            stream.seek(44) # bypasses wav header
+            stream.seek(44)  # bypasses wav header
 
             data = stream.read()
             decoder.start_utt()

@@ -11,8 +11,8 @@ con = 0
 cur = 0
 modules = {}
 
-def create_actions_db(con, cur):
 
+def create_actions_db(con, cur):
     try:
         cur.executescript("""
             CREATE TABLE synonyms (
@@ -48,131 +48,130 @@ def create_actions_db(con, cur):
             """)
         con.commit()
 
-    except sqlite3.Error, err:
-        print "Error %s:" % err.args[0]
+    except sqlite3.Error as err:
+        print("Error %s:" % err.args[0])
         sys.exit(1)
 
     return True
 
+
 def insert_words(con, cur, name, words, priority):
-
     # Jasper format, each word in list is a word_group
-    if type(words) == type([]): # if words is a list
+    if isinstance(words, []):  # if words is a list
 
-        function_name = name+' '+'handle'
+        function_name = name + ' ' + 'handle'
         try:
-          cur.execute(
-              "INSERT INTO functions (function, priority) "
-              +"values ('{fn}',{p})"
-              .format(fn=function_name, p=priority))
+            cur.execute(
+                "INSERT INTO functions (function, priority) "
+                + "values ('{fn}',{p})"
+                .format(fn=function_name, p=priority))
 
-        except sqlite3.Error, err:
-            print "Error %s:" % err.args[0]
+        except sqlite3.Error as err:
+            print("Error %s:" % err.args[0])
             sys.exit(1)
 
         for word in words:
             word = word.lower()
             cur.execute(
                 "INSERT INTO words (word, word_group, word_order) "
-                +"values ('{w}','{wg}',{seq})"
+                + "values ('{w}','{wg}',{seq})"
                 .format(w=word, wg=word, seq=0))
 
             cur.execute(
                 "INSERT INTO word_groups "
-                +"(word_group, function, word_count) "
-                +"values ('{wg}','{fn}',{cnt})"
+                + "(word_group, function, word_count) "
+                + "values ('{wg}','{fn}',{cnt})"
                 .format(wg=word, fn=function_name, cnt=1))
 
         con.commit()
 
     # Melissa format, dictionary of function name
     # and list of word match groups (lists)
-    elif type(words) == type({}): # if words is a dictionary
-
+    elif isinstance(words, {}):  # if words is a dictionary
         for function_name, fields in words.iteritems():
 
-            function_name = name+' '+function_name
+            function_name = name + ' ' + function_name
             priority = fields['priority'] if 'priority' in fields \
-                                          else 0
+                else 0
             try:
                 cur.execute(
                     "INSERT INTO functions (function, priority) "
-                    +"values ('{fn}',{p})"\
+                    + "values ('{fn}',{p})"
                     .format(fn=function_name, p=priority))
 
-            except sqlite3.Error, err:
-                print "Error %s:" % err.args[0]
+            except sqlite3.Error as err:
+                print("Error %s:" % err.args[0])
                 sys.exit(1)
 
             for group in fields['groups']:
-                if type(group) == type(''):
+                if isinstance(group, ''):
 
                     word = group.lower()
 
                     cur.execute(
                         "INSERT INTO word_groups "
-                        +"(word_group, function, word_count) "
-                        +"values ('{wg}','{fn}',{cnt})"
+                        + "(word_group, function, word_count) "
+                        + "values ('{wg}','{fn}',{cnt})"
                         .format(wg=word, fn=function_name, cnt=1))
 
                     cur.execute(
                         "INSERT INTO words "
-                        +"(word, word_group, word_order) "
-                        +"values ('{w}','{wg}',{seq})"
+                        + "(word, word_group, word_order) "
+                        + "values ('{w}','{wg}',{seq})"
                         .format(w=word, wg=word, seq=0))
 
-                elif type(group) == type([]):
+                elif isinstance(group, []):
                     word_group_string = (' '.join(group)).lower()
 
                     cur.execute(
                         "INSERT INTO word_groups "
-                        +"(word_group, function, word_count) "
-                        +"values ('{wg}','{fn}',{cnt})"
+                        + "(word_group, function, word_count) "
+                        + "values ('{wg}','{fn}',{cnt})"
                         .format(wg=word_group_string,
                                 fn=function_name, cnt=len(group)))
 
                     for order in range(0, len(group)):
-
                         word = group[order].lower()
                         cur.execute(
                             "INSERT INTO words "
-                            +"(word, word_group, word_order) "
-                            +"values ('{w}','{wg}',{seq})"
+                            + "(word, word_group, word_order) "
+                            + "values ('{w}','{wg}',{seq})"
                             .format(w=word, wg=word_group_string,
                                     seq=order))
         con.commit()
 
     else:
-        print "Invalid WORDS type '%s' for module %s"\
-            % type(words), name
+        print("Invalid WORDS type '%s' for module %s"
+              % type(words), name)
+
 
 def assemble_actions_db():
     global con, cur, modules
     try:
         if profile.data['actions_db_file'] != ':memory:' \
-        and os.path.exists(profile.data['actions_db_file']):
+                and os.path.exists(profile.data['actions_db_file']):
             os.remove(profile.data['actions_db_file'])
 
         con = sqlite3.connect(profile.data['actions_db_file'], check_same_thread=False)
         con.text_factory = sqlite3.OptimizedUnicode
         cur = con.cursor()
 
-    except sqlite3.Error, e:
-        print "Error %s:" % e.args[0]
+    except sqlite3.Error as e:
+        print("Error %s:" % e.args[0])
         sys.exit(1)
 
     if create_actions_db(con, cur):
-        print 'Successfully Created '+profile.data['actions_db_file']
+        print('Successfully Created ' + profile.data['actions_db_file'])
 
     package = importlib.import_module(profile.data['modules'])
     for finder, name, ispkg in pkgutil.walk_packages(package.__path__):
-        print 'Loading module '+name
+        print('Loading module ' + name)
         try:
             loader = finder.find_module(name)
             mod = loader.load_module(name)
 
         except:
-            print "Skipped module '%s' due to an error." % name
+            print("Skipped module '%s' due to an error." % name)
 
         else:
             priority = mod.PRIORITY if hasattr(mod, 'PRIORITY') else 0
@@ -182,11 +181,11 @@ def assemble_actions_db():
                 modules[name] = mod
 
             else:
-                print 'WARNING: Module will not be used.'
-                print '    WORDS not found for module ' + name
+                print('WARNING: Module will not be used.')
+                print('    WORDS not found for module ' + name)
 
-    # con.close()
+                # con.close()
+
 
 if con == 0:
     assemble_actions_db()
-
