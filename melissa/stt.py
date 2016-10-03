@@ -20,10 +20,12 @@ import profile
 from tts import tts
 import brain
 
+
 def stt():
     va_name = profile.data['va_name']
     r = sr.Recognizer()
-    tts('Welcome ' + profile.data['name'] + ', systems are now ready to run. How can I help you?')
+    tts('Welcome ' + profile.data['name'] +
+        ', systems are now ready to run. How can I help you?')
     if profile.data['stt'] == 'google':
         while True:
             with sr.Microphone() as source:
@@ -31,12 +33,15 @@ def stt():
                 audio = r.listen(source)
 
             try:
-                speech_text = r.recognize_google(audio).lower().replace("'", "")
+                speech_text = r.recognize_google(
+                    audio).lower().replace("'", "")
                 print(va_name + " thinks you said '" + speech_text + "'")
             except sr.UnknownValueError:
                 print(va_name + " could not understand audio")
             except sr.RequestError as e:
-                print("Could not request results from Google Speech Recognition service; {0}".format(e))
+                print(
+                    "Could not request results from Google" +
+                    "Speech Recognition service; {0}".format(e))
             else:
                 brain.query(speech_text)
 
@@ -56,7 +61,7 @@ def stt():
 
         def sphinx_stt():
             stream = open('recording.wav', 'rb')
-            stream.seek(44) # bypasses wav header
+            stream.seek(44)  # bypasses wav header
 
             data = stream.read()
             decoder.start_utt()
@@ -66,8 +71,8 @@ def stt():
             hyp = decoder.hyp()
             if hasattr(hyp, 'hypstr'):
                 speech_text = hyp.hypstr
-                print(profile.data['va_name'] + " thinks you said '"
-                      + speech_text + "'")
+                print(profile.data['va_name'] + " thinks you said '" +
+                      speech_text + "'")
                 return speech_text.lower().replace("'", "")
             else:
                 return ''
@@ -94,19 +99,20 @@ def stt():
             command = msg['text'].lower().replace("'", "")
 
             if username == profile.data['telegram_username']:
-                print(profile.data['va_name'] + " thinks you said '"
-                      + command + "'")
+                print(profile.data['va_name'] + " thinks you said '" +
+                      command + "'")
                 brain.query(command)
             else:
                 error_msg = 'You are not authorised to use this bot.'
                 bot.sendMessage(chat_id, error_msg)
 
         if profile.data['telegram_token'] == 'xxxx':
-            tts('Please enter a Telegram token or configure a different STT in the profile.json file.')
+            tts('Please enter a Telegram token or configure' +
+                'a different STT in the profile.json file.')
             quit()
         else:
             bot = telepot.Bot(profile.data['telegram_token'])
             bot.notifyOnMessage(handle)
 
-            while 1:
+            while True:
                 time.sleep(10)
