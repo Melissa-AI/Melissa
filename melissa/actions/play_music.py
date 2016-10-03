@@ -18,11 +18,12 @@ music_listing = None
 
 def mp3gen():
     """
-    This function finds all the mp3 files in a folder and it's subfolders and returns a list.
+    This function finds all the mp3 files in a folder and
+    it's subfolders and returns a list.
     """
     global music_listing
 
-    if music_listing != None:
+    if music_listing is not None:
         return
 
     if sys.platform != 'darwin' \
@@ -52,7 +53,8 @@ def mp3gen():
 
 def music_player(music_selection):
     """
-    This function takes the name of a music file as an argument and plays it depending on the OS.
+    This function takes the name of a music file
+    as an argument and plays it depending on the OS.
     """
     player = music_selection[0] + " '" + music_selection[1] + "'"
     return os.system(player)

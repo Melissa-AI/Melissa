@@ -51,8 +51,10 @@ def image_uploader(speech_text):
                 image_listing[i], config=None, anon=True)
 
             conn = sqlite3.connect(profile.data['memory_db'])
-            conn.execute("INSERT INTO image_uploads (filename, url, upload_date) VALUES (?, ?, ?)", (image_listing[
-                         i], result['link'], datetime.strftime(datetime.now(), '%d-%m-%Y')))
+            conn.execute("INSERT INTO image_uploads (filename, url," +
+                         " upload_date) VALUES (?, ?, ?)",
+                         (image_listing[i], result['link'],
+                          datetime.strftime(datetime.now(), '%d-%m-%Y')))
             conn.commit()
             conn.close()
 

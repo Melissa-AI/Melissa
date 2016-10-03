@@ -5,7 +5,8 @@ from melissa import profile
 from melissa.tts import tts
 
 WORDS = {'who_are_you': {'groups': [['who', 'are', 'you']]},
-         'toss_coin': {'groups': [['heads', 'tails'], ['toss', 'coin'], ['flip', 'coin']]},
+         'toss_coin': {'groups': [['heads', 'tails'],
+                                  ['toss', 'coin'], ['flip', 'coin']]},
          'how_am_i': {'groups': [['how', 'i', 'look'], ['how', 'am', 'i']]},
          'tell_joke': {'groups': [['tell', 'joke']]},
          'who_am_i': {'groups': [['who', 'am', 'i']]},
@@ -31,13 +32,17 @@ def toss_coin(text):
 
 def how_am_i(text):
     replies = ['You are goddamn handsome!', 'My knees go weak when I see you.',
-               'You are sexy!', 'You look like the kindest person that I have met.']
+               'You are sexy!', 'You look like' +
+               'the kindest person that I have met.']
     tts(random.choice(replies))
 
 
 def tell_joke(text):
-    jokes = ['What happens to a frogs car when it breaks down? It gets toad away.', 'Why was six scared of seven? Because seven ate nine.',
-             'What is the difference between snowmen and snowwomen? Snowballs.', 'No, I always forget the punch line.']
+    jokes = ['What happens to a frogs car when it breaks down?' +
+             ' It gets toad away.', 'Why was six scared of seven?' +
+             ' Because seven ate nine.',
+             'What is the difference between snowmen and snowwomen?' +
+             ' Snowballs.', 'No, I always forget the punch line.']
     tts(random.choice(jokes))
 
 
@@ -47,7 +52,8 @@ def who_am_i(text):
 
 
 def where_born(text):
-    tts('I was created by a magician named Tanay, in India, the magical land of himalayas.')
+    tts('I was created by a magician named Tanay, in India,' +
+        ' the magical land of himalayas.')
 
 
 def how_are_you(text):

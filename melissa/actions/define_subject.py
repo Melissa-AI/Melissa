@@ -30,6 +30,8 @@ def define_subject(speech_text):
         wiki_data = wiki_data.replace("'", "")
         tts(wiki_data)
     except wikipedia.exceptions.DisambiguationError as e:
-        tts('Can you please be more specific? You may choose something from the following.')
+        tts('Can you please be more specific?' +
+            'You may choose something from the following.')
         print(
-            "Can you please be more specific? You may choose something from the following; {0}".format(e))
+            "Can you please be more specific?" +
+            "You may choose something from the following; {0}".format(e))

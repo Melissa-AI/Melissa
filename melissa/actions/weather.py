@@ -21,6 +21,8 @@ def weather(text):
         temperature = (temperature * 9 / 5) + 32
         degrees_type = 'fahrenheit'
 
-    weather_result = "Weather.com says: It is " + weather_com_result['current_conditions']['text'].lower(
-    ) + " and " + str(temperature) + "degrees " + degrees_type + " now in " + profile.data['city_name']
+    weather_result = "Weather.com says: It is " + weather_com_result[
+                    'current_conditions']['text'].lower(
+    ) + " and " + str(temperature) + "degrees " + degrees_type +
+    " now in " + profile.data['city_name']
     tts(weather_result)

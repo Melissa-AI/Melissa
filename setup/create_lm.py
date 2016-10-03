@@ -27,7 +27,8 @@ def get_language_model():
 
     # Create the Request object
     request = urllib2.Request(
-        "http://www.speech.cs.cmu.edu/cgi-bin/tools/lmtool/run", datagen, headers)
+        "http://www.speech.cs.cmu.edu/cgi-bin/tools/lmtool/run",
+        datagen, headers)
     # Do the request, and get the response
     data = urllib2.urlopen(request).read()
 

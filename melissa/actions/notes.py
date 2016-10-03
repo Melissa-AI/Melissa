@@ -30,7 +30,8 @@ def note_something(speech_text):
     cleaned_message = ' '.join(words_of_message)
 
     conn.execute("INSERT INTO notes (notes, notes_date) VALUES (?, ?)",
-                 (cleaned_message, datetime.strftime(datetime.now(), '%d-%m-%Y')))
+                 (cleaned_message, datetime.strftime(datetime.now(),
+                  '%d-%m-%Y')))
     conn.commit()
     conn.close()
 

@@ -59,13 +59,13 @@ def create_actions_db(con, cur):
 def insert_words(con, cur, name, words, priority):
 
     # Jasper format, each word in list is a word_group
-    if type(words) == type([]):  # if words is a list
+    if isinstance(words, []):  # if words is a list
 
         function_name = name + ' ' + 'handle'
         try:
             cur.execute(
-                "INSERT INTO functions (function, priority) "
-                + "values ('{fn}',{p})"
+                "INSERT INTO functions (function, priority) " +
+                "values ('{fn}',{p})"
                 .format(fn=function_name, p=priority))
 
         except sqlite3.Error, err:
@@ -75,21 +75,21 @@ def insert_words(con, cur, name, words, priority):
         for word in words:
             word = word.lower()
             cur.execute(
-                "INSERT INTO words (word, word_group, word_order) "
-                + "values ('{w}','{wg}',{seq})"
+                "INSERT INTO words (word, word_group, word_order) " +
+                "values ('{w}','{wg}',{seq})"
                 .format(w=word, wg=word, seq=0))
 
             cur.execute(
-                "INSERT INTO word_groups "
-                + "(word_group, function, word_count) "
-                + "values ('{wg}','{fn}',{cnt})"
+                "INSERT INTO word_groups " +
+                "(word_group, function, word_count) " +
+                "values ('{wg}','{fn}',{cnt})"
                 .format(wg=word, fn=function_name, cnt=1))
 
         con.commit()
 
     # Melissa format, dictionary of function name
     # and list of word match groups (lists)
-    elif type(words) == type({}):  # if words is a dictionary
+    elif isinstance(words, {}):  # if words is a dictionary
 
         for function_name, fields in words.iteritems():
 
@@ -98,8 +98,8 @@ def insert_words(con, cur, name, words, priority):
                 else 0
             try:
                 cur.execute(
-                    "INSERT INTO functions (function, priority) "
-                    + "values ('{fn}',{p})"
+                    "INSERT INTO functions (function, priority) " +
+                    "values ('{fn}',{p})"
                     .format(fn=function_name, p=priority))
 
             except sqlite3.Error, err:
@@ -107,29 +107,29 @@ def insert_words(con, cur, name, words, priority):
                 sys.exit(1)
 
             for group in fields['groups']:
-                if type(group) == type(''):
+                if isinstance(group, ''):
 
                     word = group.lower()
 
                     cur.execute(
-                        "INSERT INTO word_groups "
-                        + "(word_group, function, word_count) "
-                        + "values ('{wg}','{fn}',{cnt})"
+                        "INSERT INTO word_groups " +
+                        "(word_group, function, word_count) " +
+                        "values ('{wg}','{fn}',{cnt})"
                         .format(wg=word, fn=function_name, cnt=1))
 
                     cur.execute(
-                        "INSERT INTO words "
-                        + "(word, word_group, word_order) "
-                        + "values ('{w}','{wg}',{seq})"
+                        "INSERT INTO words " +
+                        "(word, word_group, word_order) " +
+                        "values ('{w}','{wg}',{seq})"
                         .format(w=word, wg=word, seq=0))
 
-                elif type(group) == type([]):
+                elif isinstance(group, []):
                     word_group_string = (' '.join(group)).lower()
 
                     cur.execute(
-                        "INSERT INTO word_groups "
-                        + "(word_group, function, word_count) "
-                        + "values ('{wg}','{fn}',{cnt})"
+                        "INSERT INTO word_groups " +
+                        "(word_group, function, word_count) " +
+                        "values ('{wg}','{fn}',{cnt})"
                         .format(wg=word_group_string,
                                 fn=function_name, cnt=len(group)))
 
@@ -137,9 +137,9 @@ def insert_words(con, cur, name, words, priority):
 
                         word = group[order].lower()
                         cur.execute(
-                            "INSERT INTO words "
-                            + "(word, word_group, word_order) "
-                            + "values ('{w}','{wg}',{seq})"
+                            "INSERT INTO words " +
+                            "(word, word_group, word_order) " +
+                            "values ('{w}','{wg}',{seq})"
                             .format(w=word, wg=word_group_string,
                                     seq=order))
         con.commit()

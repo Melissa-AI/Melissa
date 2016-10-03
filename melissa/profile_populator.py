@@ -49,7 +49,8 @@ def profile_populator():
     while(True):
         stt = raw_input(
             'STT Engine ((g)oogle/(s)phinx/(t)elegram/(k)eyboard): ').lower()
-        if stt in ('g', 'google', 's', 'sphinx', 'k', 'keyboard', 't', 'telegram', ''):
+        if stt in ('g', 'google', 's', 'sphinx', 'k', 'keyboard', 't',
+                        'telegram', ''):
             if empty(stt) or stt == 'g':
                 stt = 'google'
             elif stt == 's':
@@ -59,7 +60,8 @@ def profile_populator():
             elif stt == 'k':
                 stt = 'keyboard'
             break
-        print('Invalid input, please enter (g)oogle, (s)phinx, (t)elegram, (k)eyboard or <ENTER>.')
+        print('Invalid input, please enter (g)oogle,' +
+              '(s)phinx, (t)elegram, (k)eyboard or <ENTER>.')
 
     telegram_username = raw_input('Your username at Telegram: ')
     if empty(telegram_username):
@@ -99,7 +101,8 @@ def profile_populator():
             elif degrees == 'f':
                 degrees = 'fahrenheit'
             break
-        print('Invalid input, please enter (c)elsius, (f)ahrenheit) or <ENTER>.')
+        print('Invalid input, please enter (c)elsius,' +
+              '(f)ahrenheit) or <ENTER>.')
 
     gmail_address = raw_input('Enter your gmail address (???@gmail.com): ')
     gmail_password = ''

@@ -46,12 +46,13 @@ def query(text):
     rows = actions_db.cur.fetchall()
 
     # Make the following easier to read using namedtuple.
-    sql_row_def = namedtuple('sql_row_def',
-                             'word, word_order, word_group, word_count, function')
+    sql_row_def = namedtuple(
+        'sql_row_def',
+        'word, word_order, word_group, word_count, function')
     scoring = {}
     for row in rows:
         sql_row = sql_row_def._make(row)
-        if not sql_row.word_group in scoring:
+        if sql_row.word_group not in scoring:
             # If the word_group is not already in the scoring
             # dictionary ...
 
