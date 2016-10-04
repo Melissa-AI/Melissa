@@ -7,3 +7,5 @@ install:
   - "cp data/memory.db.default data/memory.db"
 script: 
   - "python tests/check_profile.py"
+  - "find . -name \*.py -exec pep8 {} +"
+
