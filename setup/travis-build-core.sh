@@ -8,6 +8,7 @@ sudo make install
 cd .. && rm -r pa_stable_v19_20140130.tgz
 sudo pip install pyaudio
 sudo pip install -r requirements.txt
+sudo pip install pep8
 wget https://launchpad.net/python-weather-api/trunk/0.3.8/+download/pywapi-0.3.8.tar.gz
 tar xzvf pywapi-0.3.8.tar.gz && cd pywapi-0.3.8
 python setup.py build
