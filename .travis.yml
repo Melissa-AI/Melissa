@@ -8,4 +8,3 @@ install:
 script: 
   - "python tests/check_profile.py"
   - "find . -name \*.py -exec pep8 {} +"
-
