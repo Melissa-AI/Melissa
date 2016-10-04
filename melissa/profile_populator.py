@@ -3,6 +3,8 @@ import sys
 import subprocess
 import json
 from getpass import getpass
+import pywapi
+
 
 def tts_local(message):
     if sys.platform == 'darwin':
@@ -12,6 +14,7 @@ def tts_local(message):
         tts_engine = 'espeak'
         speed = '-s170'
         return subprocess.call([tts_engine, speed, message])
+
 
 def profile_populator():
     def empty(variable):
@@ -45,8 +48,10 @@ def profile_populator():
         name = 'Tanay'
 
     while(True):
-        stt = raw_input('STT Engine ((g)oogle/(s)phinx/(t)elegram/(k)eyboard): ').lower()
-        if stt in ('g','google', 's','sphinx', 'k','keyboard', 't', 'telegram', ''):
+        stt = raw_input(
+            'STT Engine ((g)oogle/(s)phinx/(t)elegram/(k)eyboard): ').lower()
+        if stt in ('g', 'google', 's', 'sphinx', 'k',
+                   'keyboard', 't', 'telegram', ''):
             if empty(stt) or stt == 'g':
                 stt = 'google'
             elif stt == 's':
@@ -56,7 +61,8 @@ def profile_populator():
             elif stt == 'k':
                 stt = 'keyboard'
             break
-        print('Invalid input, please enter (g)oogle, (s)phinx, (t)elegram, (k)eyboard or <ENTER>.')
+        print('Invalid input, please enter(g)oogle, (s)phinx, (t)elegram,' +
+              '(k)eyboard or < ENTER > .')
 
     telegram_username = raw_input('Your username at Telegram: ')
     if empty(telegram_username):
@@ -84,29 +90,61 @@ def profile_populator():
     if empty(city_name):
         city_name = 'New Delhi'
 
-    city_code = raw_input('Code of city from weather.com: ')
+    city_code = raw_input('Code of city from weather.com\
+ or <ENTER> for a search based on the name\
+ of the city you live in: ')
     if empty(city_code):
-        city_code = 'INXX0096'
+        city_list = pywapi.get_loc_id_from_weather_com(city_name)
+        if city_list['count'] == 0:
+            print 'Sorry, search results were empty.'
+            city_code = 'INXX0096'
+        else:
+            print 'Cities returned are: '
+            for city_list_i in range(city_list['count']):
+                print str(city_list_i+1) + ": " + city_list[city_list_i][1]
+            while(True):
+                city_choice_i = ''
+                city_choice_i = raw_input('Enter the index of \
+the city of your choice: ')
+                if empty(city_choice_i):
+                    city_code = 'INXX0096'
+                    break
+                city_choice_i = int(city_choice_i)
+                if 1 <= city_choice_i <= city_list['count']:
+                    city_code = city_list[city_choice_i-1][0]
+                    break
+                else:
+                    print 'Enter an index from one of the choices.\
+ Try again!'
 
     while(True):
         degrees = raw_input('(c)elsius/(f)ahrenheit): ').lower()
-        if degrees in ('c','celsius', 'f','fahrenheit', ''):
+        if degrees in ('c', 'celsius', 'f', 'fahrenheit', ''):
             if empty(degrees) or degrees == 'c':
                 degrees = 'celsius'
             elif degrees == 'f':
                 degrees = 'fahrenheit'
             break
-        print('Invalid input, please enter (c)elsius, (f)ahrenheit) or <ENTER>.')
+        print('Invalid input, please enter(c)elsius, (f)ahrenheit) or' +
+              '<ENTER > .')
 
     gmail_address = raw_input('Enter your gmail address (???@gmail.com): ')
     gmail_password = ''
     if len(gmail_address) > 0:
         gmail_password = getpass()
 
-    icloud_username = raw_input('Enter your icloud username/address (???@???.com): ')
+    icloud_username = raw_input(
+        'Enter your icloud username/address (???@???.com): ')
     icloud_password = ''
     if len(icloud_username) > 0:
         icloud_password = getpass()
+
+    tts = 'xxxx'
+
+    hotword_detection = 'on'
+
+    access_key = 'xxxx'
+    secret_key = 'xxxx'
 
     access_token = 'xxxx'
     access_token_secret = 'xxxx'
@@ -132,6 +170,8 @@ def profile_populator():
         'va_gender': va_gender,
         'name': name,
         'stt': stt,
+        'tts': tts,
+        'hotword_detection': hotword_detection,
         'telegram_username': telegram_username,
         'telegram_token': telegram_token,
         'music_path': music_path,
@@ -154,6 +194,10 @@ def profile_populator():
         'imgur': {
             'client_id': client_id,
             'client_secret': client_secret
+        },
+        'ivona': {
+            'access_key': access_key,
+            'secret_key': secret_key
         },
         'gmail': {
             'address': gmail_address,
