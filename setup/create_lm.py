@@ -15,7 +15,7 @@ from poster.streaminghttp import register_openers
 
 
 def get_language_model():
-    print 'Retrieving the language model.'
+    print('Retrieving the language model.')
 
     # Register the streaming http handlers with urllib2
     register_openers()
@@ -42,13 +42,14 @@ def get_language_model():
     url_dir = url[:-len(base)]
 
     # Construct the url for LM download.
-    dic = url_dir+num_part+'.dic'
-    lm = url_dir+num_part+'.lm'
+    dic = url_dir + num_part + '.dic'
+    lm = url_dir + num_part + '.lm'
 
     # Download and save the LM.
     urllib.urlretrieve(dic, './data/model/lm/sphinx.dic')
     urllib.urlretrieve(lm, './data/model/lm/sphinx.lm')
-    print 'Created ./data/model/lm/sphinx.dic and ./data/model/lm/sphinx.lm'
+    print('Created ./data/model/lm/sphinx.dic and ./data/model/lm/sphinx.lm')
+
 
 def create_phrase_list():
     queries = ()
@@ -56,14 +57,14 @@ def create_phrase_list():
         queries = [line.rstrip().lower() for line in f]
 
     sql = "SELECT word_group " \
-         +"FROM word_groups " \
-         +"ORDER BY word_group"
+          + "FROM word_groups " \
+          + "ORDER BY word_group"
 
     actions_db.cur.execute(sql)
     word_groups = actions_db.cur.fetchall()
-    word_groups = [x[0].lower() for x in word_groups] # flatten list of tuples
+    word_groups = [x[0].lower() for x in word_groups]  # flatten list of tuples
 
-    queries.extend(word_groups) # combine the text queries and the mysql word groups.
+    queries.extend(word_groups)  # combine the text queries and the mysql word groups.
     queries_set = set(queries)
     if '' in queries_set:
         queries_set.remove('')
@@ -76,5 +77,5 @@ def main():
     create_phrase_list()
     get_language_model()
 
-main()
 
+main()
