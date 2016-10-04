@@ -49,7 +49,7 @@ def are_you_up(text):
     tts('For you sir, always.')
 
 def love_you(text):
-    replies = ['I love you too.', 'You are looking for love in wrong place.']
+    replies = ['I love you too.', 'You are looking for love in the wrong place.']
     tts(random.choice(replies))
 
 def marry_me(text):
