@@ -8,4 +8,4 @@ install:
   - "cp data/memory.db.default data/memory.db"
 script:
   - flake8
-  - "python tests/check_profile.py"
+  - py.test

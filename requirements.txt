@@ -17,3 +17,4 @@ tweepy==3.5.0
 Wave==0.0.2
 wheel==0.24.0
 wikipedia==1.4.0
+pytest==3.0.3
