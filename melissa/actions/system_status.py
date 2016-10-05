@@ -31,8 +31,8 @@ def system_status(text):
     response += "This system is named %s and has %s CPU cores. " \
         % (name, cores)
     response += "Current CPU utilization is %s percent. " % cpu_percent
-    response += "Current memory utilization is %s percent." % memory_percent
-    response += "Current disk utilization is %s percent." % disk_percent
+    response += "Current memory utilization is %s percent. " % memory_percent
+    response += "Current disk utilization is %s percent. " % disk_percent
     tts(response)
 
 
