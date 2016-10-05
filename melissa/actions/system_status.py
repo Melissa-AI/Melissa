@@ -18,7 +18,7 @@ def system_status(text):
     disk_usage = psutil.disk_usage('/')
     disk_percent = disk_usage.percent
     response = "I am currently running on %s version %s. " % (os, version)
-    response += "This system is named %s and has %s CPU cores. " % (name, cores)
+    response += "This system is named %s and has %s CPU cores." % (name, cores)
     response += "Current CPU utilization is %s percent. " % cpu_percent
     response += "Current memory utilization is %s percent." % memory_percent
     response += "Current disk utilization is %s percent." % disk_percent
