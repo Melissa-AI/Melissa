@@ -22,9 +22,10 @@ except IOError:
     # set mock as default value to make run the test
     DEFAULT_PROFILE_DATA = {
         'va_gender': mock.Mock(),
-        'tts':mock.Mock(),
+        'tts': mock.Mock(),
     }
     mock_profile.data = DEFAULT_PROFILE_DATA
+
     # mock_import side effect
     def import_mock(name, *args):
         """import mock side effect."""
