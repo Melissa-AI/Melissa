@@ -108,7 +108,7 @@ class TestDifferentPlatform(unittest.TestCase):
 
     def test_random_platform(self, mock_sys, mock_subprocess):
         """test random platform."""
-        mock_sys.platform = 'random'
+        mock_sys.platform = get_random_string(exclude_list=('linux', 'darwin', 'win32'))
         tts(self.message)
         # empty list/mock_subprocess not called
         assert not mock_subprocess.mock_calls
