@@ -8,5 +8,4 @@ install:
   - pip install -r ./requirements-dev.txt
 script:
   - flake8
-  - "python tests/check_profile.py"
   - "python -m pytest"
