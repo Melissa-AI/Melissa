@@ -1,8 +1,9 @@
-profile.json
-data/memory.db
 *.pyc
-recording.wav
-portaudio/
-pywapi-0.3.8/
 *~
+data/memory.db
+portaudio/
+profile.json
+pywapi-0.3.8/
+recording.wav
+tests/__pycache__
 venv/
