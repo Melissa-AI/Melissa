@@ -20,8 +20,11 @@ except IOError:
     # This will be the profile module
     mock_profile = mock.Mock()
     # set mock as default value to make run the test
-    mock_profile.data = {'va_gender': mock.Mock()}
-
+    DEFAULT_PROFILE_DATA = {
+        'va_gender': mock.Mock(),
+        'tts':mock.Mock(),
+    }
+    mock_profile.data = DEFAULT_PROFILE_DATA
     # mock_import side effect
     def import_mock(name, *args):
         """import mock side effect."""
@@ -87,7 +90,8 @@ class TestDifferentPlatform(unittest.TestCase):
     def test_darwin_platform_female_gender(self, mock_sys, mock_subprocess):
         """test darwin platform."""
         mock_sys.platform = 'darwin'
-        mock_profile.data = {'va_gender': 'female'}
+        DEFAULT_PROFILE_DATA['va_gender'] = 'female'
+        mock_profile.data = DEFAULT_PROFILE_DATA
         tts(self.message)
         # NOTE: the default for macos with gender female.
         # (it don't have 'valex' flag)
@@ -99,7 +103,8 @@ class TestDifferentPlatform(unittest.TestCase):
         """test darwin platform."""
         mock_sys.platform = 'darwin'
         gender = get_random_string(exclude_list=('female', 'male'))
-        mock_profile.data = {'va_gender': gender}
+        DEFAULT_PROFILE_DATA['va_gender'] = gender
+        mock_profile.data = DEFAULT_PROFILE_DATA
         tts(self.message)
         # NOTE: the default for macos with gender female.
         # (it don't have 'valex' flag)
@@ -110,7 +115,8 @@ class TestDifferentPlatform(unittest.TestCase):
     def test_darwin_platform_male_gender(self, mock_sys, mock_subprocess):
         """test darwin platform and male gender."""
         mock_sys.platform = 'darwin'
-        mock_profile.data = {'va_gender': 'male'}
+        DEFAULT_PROFILE_DATA['va_gender'] = 'male'
+        mock_profile.data = DEFAULT_PROFILE_DATA
         tts(self.message)
         mock_call = mock.call.call(['say', '-valex', self.message])
         assert mock_call in mock_subprocess.mock_calls
@@ -144,11 +150,13 @@ class TestDifferentPlatform(unittest.TestCase):
         mock_profile.data = {'va_gender': 'female'}
         for platform in ['linux', 'win32']:
             mock_sys.platform = platform
+            DEFAULT_PROFILE_DATA['tts'] = mock.Mock()
+            mock_profile.data = DEFAULT_PROFILE_DATA
             tts(self.message)
             # NOTE: the default for linux/win32 with gender male.
             # ( see non-exitent 'ven+f3' flag)
             mock_call = mock.call.call(
-                ['espeak', '-ven+f3', '-s170', self.message]
+                ['espeak', '-s170', self.message]
             )
             assert mock_call in mock_subprocess.mock_calls
             assert len(mock_subprocess.mock_calls) == 1
@@ -159,7 +167,8 @@ class TestDifferentPlatform(unittest.TestCase):
     def test_linux_win32_platf_random_gender(self, mock_sys, mock_subprocess):
         """test linux and win32 platform."""
         mock_profile.data = {
-            'va_gender': get_random_string(exclude_list=('male', 'female'))
+            'va_gender': get_random_string(exclude_list=('male', 'female')),
+            'tts': mock.Mock(),
         }
         for platform in ['linux', 'win32']:
             mock_sys.platform = platform
