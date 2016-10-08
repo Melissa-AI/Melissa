@@ -66,7 +66,8 @@ class TestDifferentPlatform(unittest.TestCase):
     def test_default_mock(self, mock_sys, mock_subprocess):
         """test using default mock obj."""
         tts(self.message)
-        # NOTE: the default for linux/win32 with gender male. ( see non-exitent 'ven+f3' flag)
+        # NOTE: the default for linux/win32 with gender male.
+        # ( see non-exitent 'ven+f3' flag)
         mock_call = mock.call.call(['espeak', '-s170', self.message])
         assert mock_call in mock_subprocess.mock_calls
         assert len(mock_subprocess.mock_calls) == 1
@@ -75,8 +76,10 @@ class TestDifferentPlatform(unittest.TestCase):
         """test darwin platform."""
         mock_sys.platform = 'darwin'
         tts(self.message)
-        # NOTE: the default for macos with gender female. (it don't have 'valex' flag)
-        assert mock.call.call(['say', self.message]) in mock_subprocess.mock_calls
+        # NOTE: the default for macos with gender female.
+        # (it don't have 'valex' flag)
+        mock_call = mock.call.call(['say', self.message])
+        assert mock_call in mock_subprocess.mock_calls
         assert len(mock_subprocess.mock_calls) == 1
 
     def test_darwin_platform_female_gender(self, mock_sys, mock_subprocess):
@@ -84,8 +87,10 @@ class TestDifferentPlatform(unittest.TestCase):
         mock_sys.platform = 'darwin'
         mock_profile.data = {'va_gender': 'female'}
         tts(self.message)
-        # NOTE: the default for macos with gender female. (it don't have 'valex' flag)
-        assert mock.call.call(['say', self.message]) in mock_subprocess.mock_calls
+        # NOTE: the default for macos with gender female.
+        # (it don't have 'valex' flag)
+        mock_call = mock.call.call(['say', self.message])
+        assert mock_call in mock_subprocess.mock_calls
         assert len(mock_subprocess.mock_calls) == 1
 
     def test_darwin_platform_random_gender(self, mock_sys, mock_subprocess):
@@ -94,8 +99,10 @@ class TestDifferentPlatform(unittest.TestCase):
         gender = get_random_string(exclude_list=('female', 'male'))
         mock_profile.data = {'va_gender': gender}
         tts(self.message)
-        # NOTE: the default for macos with gender female. (it don't have 'valex' flag)
-        assert mock.call.call(['say', self.message]) in mock_subprocess.mock_calls
+        # NOTE: the default for macos with gender female.
+        # (it don't have 'valex' flag)
+        mock_call = mock.call.call(['say', self.message])
+        assert mock_call in mock_subprocess.mock_calls
         assert len(mock_subprocess.mock_calls) == 1
 
     def test_darwin_platform_male_gender(self, mock_sys, mock_subprocess):
@@ -103,12 +110,15 @@ class TestDifferentPlatform(unittest.TestCase):
         mock_sys.platform = 'darwin'
         mock_profile.data = {'va_gender': 'male'}
         tts(self.message)
-        assert mock.call.call(['say', '-valex', self.message]) in mock_subprocess.mock_calls
+        mock_call = mock.call.call(['say', '-valex', self.message])
+        assert mock_call in mock_subprocess.mock_calls
         assert len(mock_subprocess.mock_calls) == 1
 
     def test_random_platform(self, mock_sys, mock_subprocess):
         """test random platform."""
-        mock_sys.platform = get_random_string(exclude_list=('linux', 'darwin', 'win32'))
+        mock_sys.platform = get_random_string(
+            exclude_list=('linux', 'darwin', 'win32')
+        )
         tts(self.message)
         # empty list/mock_subprocess not called
         assert not mock_subprocess.mock_calls
@@ -118,7 +128,8 @@ class TestDifferentPlatform(unittest.TestCase):
         for platform in ['linux', 'win32']:
             mock_sys.platform = platform
             tts(self.message)
-            # NOTE: the default for linux/win32 with gender male. ( see non-exitent 'ven+f3' flag)
+            # NOTE: the default for linux/win32 with gender male.
+            # ( see non-exitent 'ven+f3' flag)
             mock_call = mock.call.call(['espeak', '-s170', self.message])
             assert mock_call in mock_subprocess.mock_calls
             assert len(mock_subprocess.mock_calls) == 1
@@ -126,27 +137,33 @@ class TestDifferentPlatform(unittest.TestCase):
             # reset mock_subprocess
             mock_subprocess.reset_mock()
 
-    def test_linux_win32_platform_female_gender(self, mock_sys, mock_subprocess):
+    def test_linux_win32_platf_female_gender(self, mock_sys, mock_subprocess):
         """test linux and win32 platform."""
         mock_profile.data = {'va_gender': 'female'}
         for platform in ['linux', 'win32']:
             mock_sys.platform = platform
             tts(self.message)
-            # NOTE: the default for linux/win32 with gender male. ( see non-exitent 'ven+f3' flag)
-            mock_call = mock.call.call(['espeak', '-ven+f3', '-s170', self.message])
+            # NOTE: the default for linux/win32 with gender male.
+            # ( see non-exitent 'ven+f3' flag)
+            mock_call = mock.call.call(
+                ['espeak', '-ven+f3', '-s170', self.message]
+            )
             assert mock_call in mock_subprocess.mock_calls
             assert len(mock_subprocess.mock_calls) == 1
 
             # reset mock_subprocess
             mock_subprocess.reset_mock()
 
-    def test_linux_win32_platform_random_gender(self, mock_sys, mock_subprocess):
+    def test_linux_win32_platf_random_gender(self, mock_sys, mock_subprocess):
         """test linux and win32 platform."""
-        mock_profile.data = {'va_gender': get_random_string(exclude_list=('male', 'female'))}
+        mock_profile.data = {
+            'va_gender': get_random_string(exclude_list=('male', 'female'))
+        }
         for platform in ['linux', 'win32']:
             mock_sys.platform = platform
             tts(self.message)
-            # NOTE: the default for linux/win32 with gender male. ( see non-exitent 'ven+f3' flag)
+            # NOTE: the default for linux/win32 with gender male.
+            # ( see non-exitent 'ven+f3' flag)
             mock_call = mock.call.call(['espeak', '-s170', self.message])
             assert mock_call in mock_subprocess.mock_calls
             assert len(mock_subprocess.mock_calls) == 1
