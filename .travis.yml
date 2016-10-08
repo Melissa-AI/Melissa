@@ -10,4 +10,4 @@ install:
 script:
   - flake8
   - "python tests/check_profile.py"
-  - "python pytest"
+  - "python -m pytest"
