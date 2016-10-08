@@ -70,7 +70,6 @@ class TestDifferentPlatform(unittest.TestCase):
         self.message = ''
         mock_profile.data = DEFAULT_PROFILE_DATA
 
-
     def test_default_mock(self, mock_sys, mock_subprocess):
         """test using default mock obj."""
         tts(self.message)
