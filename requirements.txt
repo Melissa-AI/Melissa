@@ -1,21 +1,42 @@
-beautifulsoup4==4.4.1
-HoroscopeGenerator==0.1.8
-imgurpython==1.1.6
-netifaces==0.10.5
-oauthlib==1.0.3
-PocketSphinx==0.0.9
-poster==0.8.1
+#Melissa core dependencies
 psutil==4.3.0
-PyAudio==0.2.9
-pygame==1.9.2b6
-pyicloud==0.9.1
-pyvona==1.1
 requests==2.8.1
 requests-oauthlib==0.5.0
-six==1.10.0
-SpeechRecognition==3.1.3
-telepot==4.1
-tweepy==3.5.0
-Wave==0.0.2
 wheel==0.24.0
+oauthlib==1.0.3
+six==1.10.0
+poster==0.8.1
+pygame==1.9.2b6
+pyvona==1.1
+
+#Data Extraction Module
+beautifulsoup4==4.4.1
+
+# Speech Recognition Module
+PocketSphinx==0.0.9
+SpeechRecognition==3.1.3
+
+#Audio I/O Module
+PyAudio==0.2.9
+Wave==0.0.2
+
+#iCloud Module
+pyicloud==0.9.1
+
+#Imgur Module
+imgurpython==1.1.6
+
+#Network Module
+netifaces==0.10.5
+
+#Horoscope Module
+HoroscopeGenerator==0.1.8
+
+#Telegram Module
+telepot==4.1
+
+#Twitter Module
+tweepy==3.5.0
+
+#Wikipedia  Module
 wikipedia==1.4.0
