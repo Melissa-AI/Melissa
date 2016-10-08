@@ -68,6 +68,8 @@ class TestDifferentPlatform(unittest.TestCase):
     def setUp(self):
         """set up func."""
         self.message = ''
+        mock_profile.data = DEFAULT_PROFILE_DATA
+
 
     def test_default_mock(self, mock_sys, mock_subprocess):
         """test using default mock obj."""
@@ -195,3 +197,39 @@ class TestDifferentPlatform(unittest.TestCase):
 
             # reset mock_subprocess
             mock_subprocess.reset_mock()
+
+    def test_pyvona(self, mock_sys, mock_subprocess):
+        """test pyvona."""
+        random_gender = get_random_string(
+            exclude_list=('female', 'male')
+        )
+        mock_access_key = mock.Mock()
+        mock_secret_key = mock.Mock()
+        for gender in ('male', 'female', random_gender):
+            mock_profile.data = {
+                'va_gender': gender,
+                'tts': 'ivona',
+                'ivona': {
+                    'access_key': mock_access_key,
+                    'secret_key': mock_secret_key,
+                }
+            }
+            with mock.patch('melissa.tts.pyvona') as mock_pyvona:
+                tts(self.message)
+                # test voice name
+                assert len(mock_pyvona.mock_calls) == 2
+                # test voice name
+                if gender == 'female':
+                    assert mock_pyvona.create_voice().voice_name == 'Salli'
+                elif gender == 'male':
+                    assert mock_pyvona.create_voice().voice_name == 'Joey'
+                else:
+                    assert mock_pyvona.create_voice().voice_name == 'Joey'
+                create_voice_call = mock.call.create_voice(
+                    mock_access_key, mock_secret_key
+                )
+                assert create_voice_call in mock_pyvona.mock_calls
+                engine_speak_call = mock.call.create_voice().speak(
+                    self.message
+                )
+                assert engine_speak_call in mock_pyvona.mock_calls
