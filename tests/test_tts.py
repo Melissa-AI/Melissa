@@ -7,7 +7,28 @@ except ImportError:  # py2
 
 import pytest
 
-from melissa.tts import tts
+try:
+    from melissa.tts import tts
+except IOError:
+    # NOTE: don't test with existing profile.
+    # taken from http://stackoverflow.com/a/8658332
+    # mocking the import so mock_profile could be loaded.
+    # Store original __import__
+    orig_import = __import__
+    # This will be the profile module
+    mock_profile = mock.Mock()
+    # set mock as default value to make run the test
+    mock_profile.data = {'va_gender': mock.Mock()}
+
+    # mock_import side effect
+    def import_mock(name, *args):
+        """import mock side effect."""
+        if name == 'profile':
+            return mock_profile
+        return orig_import(name, *args)
+
+    with mock.patch('__builtin__.__import__', side_effect=import_mock):
+        from melissa.tts import tts
 
 
 def test_empty_string():
@@ -34,8 +55,8 @@ class TestDifferentPlatform(unittest.TestCase):
     def test_default_mock(self, mock_sys, mock_subprocess):
         """test using default mock obj."""
         tts(self.message)
-        # NOTE: the default for linux/win32 with gender female. ( see '-ven+f3' input)
-        mock_call = mock.call.call(['espeak', '-ven+f3', '-s170', self.message])
+        # NOTE: the default for linux/win32 with gender male. ( see non-exitent 'ven+f3' flag)
+        mock_call = mock.call.call(['espeak', '-s170', self.message])
         assert mock_call in mock_subprocess.mock_calls
         assert len(mock_subprocess.mock_calls) == 1
 
@@ -47,8 +68,7 @@ class TestDifferentPlatform(unittest.TestCase):
         assert mock.call.call(['say', self.message]) in mock_subprocess.mock_calls
         assert len(mock_subprocess.mock_calls) == 1
 
-    @mock.patch('melissa.tts.profile')
-    def test_darwin_platform_male_gender(self, mock_profile, mock_sys, mock_subprocess, ):
+    def test_darwin_platform_male_gender(self, mock_sys, mock_subprocess):
         """test darwin platform and male gender."""
         mock_sys.platform = 'darwin'
         mock_profile.data = {'va_gender': 'male'}
@@ -68,16 +88,15 @@ class TestDifferentPlatform(unittest.TestCase):
         for platform in ['linux', 'win32']:
             mock_sys.platform = platform
             tts(self.message)
-            # NOTE: the default for linux/win32 with gender female. ( see '-ven+f3' input)
-            mock_call = mock.call.call(['espeak', '-ven+f3', '-s170', self.message])
+            # NOTE: the default for linux/win32 with gender male. ( see non-exitent 'ven+f3' flag)
+            mock_call = mock.call.call(['espeak', '-s170', self.message])
             assert mock_call in mock_subprocess.mock_calls
             assert len(mock_subprocess.mock_calls) == 1
 
             # reset mock_subprocess
             mock_subprocess.reset_mock()
 
-    @mock.patch('melissa.tts.profile')
-    def test_linux_win32_platform_male_gender(self, mock_profile, mock_sys, mock_subprocess):
+    def test_linux_win32_platform_male_gender(self, mock_sys, mock_subprocess):
         """test linux and win32 platform."""
         mock_profile.data['va_gender'] = 'male'
         for platform in ('linux', 'win32'):
