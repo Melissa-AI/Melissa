@@ -38,7 +38,9 @@ def get_random_string(exclude_list):
     length = 10
     result = ''.join(random.choice(string.lowercase) for i in range(length))
     while result in exclude_list:
-        result = ''.join(random.choice(string.lowercase) for i in range(length))
+        result = ''.join(
+            random.choice(string.lowercase) for i in range(length)
+        )
     return result
 
 
