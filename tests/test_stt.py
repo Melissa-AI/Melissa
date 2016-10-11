@@ -164,8 +164,8 @@ def test_run_sphinx_stt():
         assert len(mock_sr.mock_calls) == 9
         assert len(mock_open.mock_calls) == 7
         mock_sphinx_stt = (
-            mock_decoder.return_value.hyp.return_value.hypstr.lower.return_value
-            .replace())
+            mock_decoder.return_value.hyp.return_value.hypstr
+            .lower.return_value.replace())
         mock_brain.query.assert_called_once_with(mock_sphinx_stt)
         mock_open_data = [
             mock.call('recording.wav', 'wb'),
