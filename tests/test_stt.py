@@ -55,11 +55,7 @@ def test_run():
             mock.patch('melissa.stt.tts') as mock_tts:
         from melissa.stt import stt
         stt()
-    welcome_msg = (
-        'Welcome {}, systems are now ready to run.'
-        ' How can I help you?').format(mock_name)
-    assert len(mock_tts.mock_calls) == 1
-    assert mock.call(welcome_msg) in mock_tts.mock_calls
+    mock_tts.assert_not_called()
     mock_sr.Recognizer.assert_called_once_with()
 
 
@@ -74,7 +70,6 @@ def test_run_google_stt_with_error():
     mock_profile.data = profile_data
     with mock.patch('__builtin__.__import__', side_effect=import_mock),\
             mock.patch('melissa.stt.sr') as mock_sr, \
-            mock.patch('melissa.stt.brain') as mock_brain, \
             mock.patch('melissa.stt.tts'):
         from melissa.stt import stt
         with pytest.raises(TypeError):
@@ -98,7 +93,6 @@ def test_run_google_stt_with_error():
         ]
         for call in sr_calls:
             assert call in mock_sr.mock_calls
-        assert not mock_brain.call_count
 
 
 def test_run_google_stt():
@@ -115,7 +109,6 @@ def test_run_google_stt():
     random_audio_text = get_random_string()
     with mock.patch('__builtin__.__import__', side_effect=import_mock),\
             mock.patch('melissa.stt.sr') as mock_sr, \
-            mock.patch('melissa.stt.brain') as mock_brain, \
             mock.patch('melissa.stt.tts'):
         from melissa.stt import stt
         raised_error = KeyboardInterrupt
@@ -123,9 +116,7 @@ def test_run_google_stt():
             mock.Mock(), raised_error()]
         mock_sr.Recognizer.return_value.recognize_google.return_value = \
             random_audio_text
-        with pytest.raises(raised_error):
-            stt()
-        mock_brain.query.assert_called_once_with(random_audio_text)
+        stt()
 
 
 def test_run_sphinx_stt():
@@ -149,7 +140,6 @@ def test_run_sphinx_stt():
     mock_open = mock.mock_open()
     with mock.patch('__builtin__.__import__', side_effect=import_mock),\
             mock.patch('melissa.stt.sr') as mock_sr, \
-            mock.patch('melissa.stt.brain') as mock_brain, \
             mock.patch('melissa.stt.Decoder') as mock_decoder, \
             mock.patch('melissa.stt.open', mock_open, create=True), \
             mock.patch('melissa.stt.tts'):
@@ -158,15 +148,10 @@ def test_run_sphinx_stt():
         mock_audio = mock.Mock()
         mock_sr.Recognizer.return_value.listen.side_effect = [
             mock_audio, raised_error()]
-        with pytest.raises(raised_error):
-            stt()
+        stt()
         mock_audio.get_wav_data.assert_called_once_with()
-        assert len(mock_sr.mock_calls) == 9
+        assert len(mock_sr.mock_calls) == 5
         assert len(mock_open.mock_calls) == 7
-        mock_sphinx_stt = (
-            mock_decoder.return_value.hyp.return_value.hypstr
-            .lower.return_value.replace())
-        mock_brain.query.assert_called_once_with(mock_sphinx_stt)
         mock_open_data = [
             mock.call('recording.wav', 'wb'),
             mock.call().__enter__(),
@@ -210,16 +195,13 @@ def test_run_keyboard_stt():
     profile_data['stt'] = 'keyboard'
     with mock.patch('__builtin__.__import__', side_effect=import_mock),\
             mock.patch('melissa.stt.raw_input') as mock_input, \
-            mock.patch('melissa.stt.brain') as mock_brain, \
             mock.patch('melissa.stt.tts'):
         from melissa.stt import stt
-        raised_error = ValueError
         mock_text = mock.Mock()
+        raised_error = ValueError
         mock_input.side_effect = [mock_text, raised_error()]
-        with pytest.raises(raised_error):
-            stt()
-        mock_brain.query.assert_called_once_with(mock_text)
-        assert mock_input.call_count == 2
+        stt()
+        assert mock_input.call_count == 1
         assert mock.call('Write something: ') in mock_input.mock_calls
 
 
@@ -239,7 +221,7 @@ def test_run_telegram_stt_wrong_token():
             'Please enter a Telegram token or configure a differentSTT'
             ' in the profile.json file.')
         mock_tts.assert_called_with(mock_tts_call)
-        assert mock_tts.call_count == 2
+        assert mock_tts.call_count == 1
 
 
 def test_run_telegram_stt():
