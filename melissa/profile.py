@@ -13,11 +13,14 @@ def load_profile():
     profile_json = open('profile.json')
     data = json.load(profile_json, object_hook=jd.decode_dict)
     profile_json.close()
+def main():
+    if len(data) == 0:
+        print "Loading profile data"
+        if os.path.isfile('profile.json'):
+            load_profile()
+        else:
+            profile_populator()
+            load_profile()
 
-if len(data) == 0:
-    print "Loading profile data"
-    if os.path.isfile('profile.json'):
-        load_profile()
-    else:
-        profile_populator()
-        load_profile()
+if __name__ == "__main__":
+    main()
