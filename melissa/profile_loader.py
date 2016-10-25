@@ -5,6 +5,7 @@ import json
 from utilities import json_decode as jd
 from profile_populator import profile_populator
 
+
 def load_profile(skip_message=False):
     if not skip_message:
         print "Loading profile data"
