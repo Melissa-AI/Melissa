@@ -1,4 +1,6 @@
 import random
+import requests
+import json
 
 # Melissa
 from melissa import profile
@@ -42,19 +44,63 @@ def how_am_i(text):
 
 
 def tell_joke(text):
-    jokes = [
-        'What happens to a frogs car when it breaks down? It gets toad away.',
-        'Why was six scared of seven? Because seven ate nine.',
-        'Why are mountains so funny? Because they are hill areas.',
-        'Have you ever tried to eat a clock?'
-        'I hear it is very time consuming.',
-        'What happened when the wheel was invented? A revolution.',
-        'What do you call a fake noodle? An impasta!',
-        'Did you hear about that new broom? It is sweeping the nation!',
-        'What is heavy forward but not backward? Ton.',
-        'No, I always forget the punch line.'
-    ]
-    tts(random.choice(jokes))
+    first_time = True
+    seen_chuck_norris_joke = False
+    while(True):
+        if first_time and not seen_chuck_norris_joke:
+            print 'Perhaps a Chuck Norris one? \nAnswer with a yes or a no?'
+        elif not first_time and not seen_chuck_norris_joke:
+            print 'Atleast now a Chuck Norris one?'
+        elif not first_time and seen_chuck_norris_joke:
+            print 'Another Chuck Norris joke?'
+        chuck_norris_flag = raw_input()
+        if chuck_norris_flag == '' or chuck_norris_flag == 'no':
+            print 'Alright, your choice. But, if you ask me, you are',
+            if not first_time:
+                print 'really',
+            else:
+                print 'really, really',
+            print 'missing something!"'
+            jokes = [
+                'What happens to a frogs car when it breaks down?'
+                ' It gets toad away.',
+                'Why was six scared of seven? Because seven ate nine.',
+                'Why are mountains so funny?'
+                ' Because they are hill areas.',
+                'Have you ever tried to eat a clock? '
+                'I hear it is very time consuming.',
+                'What happened when the wheel was invented?'
+                ' A revolution.',
+                'What do you call a fake noodle? An impasta!',
+                'Did you hear about that new broom?'
+                ' It is sweeping the nation!',
+                'What is heavy forward but not backward? Ton.',
+                'No, I always forget the punch line.'
+            ]
+            print random.choice(jokes)
+            tts(random.choice(jokes))
+            first_time = False
+            seen_chuck_norris_joke = False
+        else:
+            if not first_time:
+                print 'Good.'
+            req = requests.get('http://api.icndb.com/jokes/random')
+            json_joke = json.loads(req.text)['value']
+            print 'Here is a',
+            if json_joke['categories']:
+                print json_joke['categories'][0],
+            print 'Chuck Norris joke for you: '
+            print json_joke['joke']
+            tts(json_joke['joke'])
+            seen_chuck_norris_joke = True
+            first_time = False
+
+        go_again = raw_input('Haha, do you want another one?: ')
+        if go_again == 'yes':
+            continue
+        else:
+            print 'That was good, no? Haha, again!'
+            break
 
 
 def who_am_i(text):
