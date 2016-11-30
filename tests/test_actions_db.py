@@ -9,6 +9,10 @@ except ImportError:  # py2
 
 import pytest
 import sqlite3
+import os
+
+os.chdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..\
+/melissa/'))
 
 
 def test_simple_import():
