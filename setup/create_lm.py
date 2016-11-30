@@ -29,7 +29,7 @@ def get_language_model():
 
     data1 = encode.MultipartParam("formtype", "simple")
     data2 = encode.MultipartParam.from_file(
-        "corpus", "./data/model/phrase_list.txt")
+        "corpus", "./melissa/data/model/phrase_list.txt")
     datagen, headers = encode.multipart_encode([data1, data2])
 
     # Create the Request object
@@ -55,14 +55,14 @@ def get_language_model():
     lm = url_dir + num_part + '.lm'
 
     # Download and save the LM.
-    urllib.urlretrieve(dic, './data/model/lm/sphinx.dic')
-    urllib.urlretrieve(lm, './data/model/lm/sphinx.lm')
-    print 'Created ./data/model/lm/sphinx.dic and ./data/model/lm/sphinx.lm'
+    urllib.urlretrieve(dic, './melissa/data/model/lm/sphinx.dic')
+    urllib.urlretrieve(lm, './melissa/data/model/lm/sphinx.lm')
+    print 'Created ./melissa/data/model/lm/sphinx.dic and ./melissa/data/model/lm/sphinx.lm'
 
 
 def create_phrase_list():
     queries = ()
-    with open('./data/model/user_queries.txt', 'r') as f:
+    with open('./melissa/data/model/user_queries.txt', 'r') as f:
         queries = [line.rstrip().lower() for line in f]
 
     sql = "SELECT word_group " \
@@ -79,7 +79,7 @@ def create_phrase_list():
     if '' in queries_set:
         queries_set.remove('')
 
-    with open('./data/model/phrase_list.txt', 'w') as f:
+    with open('./melissa/data/model/phrase_list.txt', 'w') as f:
         f.write("\n".join(sorted(queries_set)))
 
 
