@@ -17,7 +17,8 @@ wikipedia==1.4.0
 pyicloud==0.9.1
 
 # Horoscope
-HoroscopeGenerator==0.1.8
+lxml==3.6.4
+Horoscope==1.0.3
 
 # Imgur Handler
 imgurpython==1.1.6

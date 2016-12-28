@@ -1,4 +1,5 @@
-from horoscope_generator import HoroscopeGenerator
+from horoscope import Horoscope
+from melissa import profile
 
 # Melissa
 from melissa.tts import tts
@@ -19,4 +20,5 @@ WORDS = {
 
 
 def tell_horoscope(text):
-    tts(HoroscopeGenerator.format_sentence(HoroscopeGenerator.get_sentence()))
+    today_horoscope = Horoscope.get_todays_horoscope(profile.data['sun_sign'])
+    tts(today_horoscope['horoscope'])

@@ -76,7 +76,7 @@ def test_run_empty_input():
             mock.patch('melissa.profile_populator.json') as mock_json:
         profile_populator()
 
-        assert mock_input.call_count == 13
+        assert mock_input.call_count == 15
         input_calls = [
             mock.call('What would you like to name me?: '),
             mock.call('What is my gender ((m)ale/(f)emale)?: '),
@@ -128,7 +128,8 @@ def test_run_empty_input():
                 'access_token': 'xxxx', 'access_token_secret': 'xxxx',
                 'consumer_key': 'xxxx', 'consumer_secret': 'xxxx'},
             'va_gender': 'female',
-            'va_name': 'Melissa'
+            'va_name': 'Melissa',
+            'sun_sign': 'Aquarius',
         }
         assert mock_json.dump.call_args[0][1] == mock_open.return_value
         result_json = mock_json.dump.call_args[0][0]

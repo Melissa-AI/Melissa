@@ -47,6 +47,31 @@ def profile_populator():
     if empty(name):
         name = 'Tanay'
 
+    sun_signs = {1: 'Aquarius',
+                 2: 'Pisces',
+                 3: 'Aries',
+                 4: 'Taurus',
+                 5: 'Gemini',
+                 6: 'Cancer',
+                 7: 'Leo',
+                 8: 'Virgo',
+                 9: 'Libra',
+                 10: 'Scorpio',
+                 11: 'Sagittarius',
+                 12: 'Capricorn'}
+    print 'What is your sun sign?'
+    for sign in sun_signs.keys():
+        print str(sign) + '. ' + sun_signs[sign]
+    sun_sign = raw_input('Enter the serial number of the sign: ')
+    while (not sun_sign.isdigit() or not 1 <= int(sun_sign) <= 12):
+        sun_sign = raw_input('You did not enter a number between 1\
+                 and 12,press <Enter> without an entry to select the\
+                default of Aquarius')
+        if empty(sun_sign):
+            sun_sign = '1'
+            break
+    sun_sign = sun_signs[int(sun_sign)]
+
     while(True):
         stt = raw_input(
             'STT Engine ((g)oogle/(s)phinx/(t)elegram/(k)eyboard): ').lower()
@@ -169,6 +194,7 @@ the city of your choice: ')
         'va_name': va_name,
         'va_gender': va_gender,
         'name': name,
+        'sun_sign': sun_sign,
         'stt': stt,
         'tts': tts,
         'hotword_detection': hotword_detection,
