@@ -145,10 +145,10 @@ the city of your choice: ')
         if empty(push_bullet):
             break
 
-        else if type(push_bullet) != str:
+        elif type(push_bullet) != str:
             print "Invalid token"
 
-        else if push_bullet[0:2] != "o.":
+        elif push_bullet[0:2] != "o.":
             print "Invalid token"
 
     tts = 'xxxx'
