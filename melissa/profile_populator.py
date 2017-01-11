@@ -4,6 +4,7 @@ import subprocess
 import json
 from getpass import getpass
 import pywapi
+from pushbullet import Pushbullet
 
 
 def tts_local(message):
@@ -139,6 +140,17 @@ the city of your choice: ')
     if len(icloud_username) > 0:
         icloud_password = getpass()
 
+    while(True):
+        push_bullet = raw_input('Enter your Pushbullet token: ')
+        if empty(push_bullet):
+            break
+
+        else if type(push_bullet) != str:
+            print "Invalid token"
+
+        else if push_bullet[0:2] != "o.":
+            print "Invalid token"
+
     tts = 'xxxx'
 
     hotword_detection = 'on'
@@ -207,6 +219,7 @@ the city of your choice: ')
             'username': icloud_username,
             'password': icloud_password
         },
+        'pushbullet': push_bullet,
         'modules': modules,
         'actions_db_file': actions_db_file,
         'memory_db': memory_db
