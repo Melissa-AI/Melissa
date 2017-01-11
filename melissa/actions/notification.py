@@ -1,0 +1,17 @@
+from melissa import profile
+import random
+from pushbullet import Pushbullet
+
+def handle_exceptions(f):
+    def inner(*args, **kwargs):
+        try:
+            return f(*args, **kwargs)
+        except Exception as e:
+            print "Error: ",e
+    return inner
+
+
+@handle_exceptions
+def push(info):
+    pb = Pushbullet(profile.data['push_bullet'])
+    send_notification = pb.push_note(profile.data['va_name'], info)
