@@ -149,6 +149,9 @@ the city of your choice: ')
 
         elif push_bullet[0:2] != "o.":
             print "Invalid token"
+        
+        else:
+            break
 
     tts = 'xxxx'
 
