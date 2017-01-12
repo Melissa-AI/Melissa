@@ -1,5 +1,4 @@
 from melissa import profile
-import random
 from pushbullet import Pushbullet
 
 def handle_exceptions(f):
