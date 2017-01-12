@@ -4,7 +4,6 @@ import subprocess
 import json
 from getpass import getpass
 import pywapi
-from pushbullet import Pushbullet
 
 
 def tts_local(message):
