@@ -13,4 +13,4 @@ def handle_exceptions(f):
 @handle_exceptions
 def push(info):
     pb = Pushbullet(profile.data['push_bullet'])
-    send_notification = pb.push_note(profile.data['va_name'], info)
+    pb.push_note(profile.data['va_name'], info) #Send Notification

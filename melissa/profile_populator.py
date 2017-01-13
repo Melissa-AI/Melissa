@@ -143,13 +143,10 @@ the city of your choice: ')
         push_bullet = raw_input('Enter your Pushbullet token: ')
         if empty(push_bullet):
             break
-
-        elif type(push_bullet) != str:
-            print "Invalid token"
-
+        elif not isinstance(push_bullet, str):
+            print("Invalid token")
         elif push_bullet[0:2] != "o.":
-            print "Invalid token"
-        
+            print("Invalid token")
         else:
             break
 
