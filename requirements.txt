@@ -44,4 +44,4 @@ pyvona==1.1
 poster==0.8.1
 
 # Notification System
-pushbullet==0.10.0
+pushbullet.py==0.10.0

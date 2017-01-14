@@ -76,7 +76,7 @@ def test_run_empty_input():
             mock.patch('melissa.profile_populator.json') as mock_json:
         profile_populator()
 
-        assert mock_input.call_count == 13
+        assert mock_input.call_count == 14
         input_calls = [
             mock.call('What would you like to name me?: '),
             mock.call('What is my gender ((m)ale/(f)emale)?: '),
@@ -94,7 +94,8 @@ def test_run_empty_input():
             mock.call('Enter the index of the city of your choice: '),
             mock.call('(c)elsius/(f)ahrenheit): '),
             mock.call('Enter your gmail address (???@gmail.com): '),
-            mock.call('Enter your icloud username/address (???@???.com): ')
+            mock.call('Enter your icloud username/address (???@???.com): '),
+            mock.call('Enter your Pushbullet token: ')
         ]
         for call in input_calls:
             assert call in mock_input.mock_calls
@@ -124,6 +125,7 @@ def test_run_empty_input():
             'telegram_token': 'xxxx',
             'telegram_username': 'tanay1337',
             'tts': 'xxxx',
+            'pushbullet': 'xxxx',
             'twitter': {
                 'access_token': 'xxxx', 'access_token_secret': 'xxxx',
                 'consumer_key': 'xxxx', 'consumer_secret': 'xxxx'},
