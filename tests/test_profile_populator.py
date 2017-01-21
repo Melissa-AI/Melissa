@@ -125,7 +125,7 @@ def test_run_empty_input():
             'telegram_token': 'xxxx',
             'telegram_username': 'tanay1337',
             'tts': 'xxxx',
-            'pushbullet': 'xxxx',
+            'pushbullet': '',
             'twitter': {
                 'access_token': 'xxxx', 'access_token_secret': 'xxxx',
                 'consumer_key': 'xxxx', 'consumer_secret': 'xxxx'},
