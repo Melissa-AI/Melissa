@@ -7,6 +7,10 @@ except ImportError:  # py2
 
 def test_push():
     info = mock.Mock()
+    m_profile = {'push_bullet': '', 'va_name': ''}
     with mock.patch('melissa.profile_loader.load_profile'):
-        from melissa.actions import notification
-        notification.push(info)
+        with mock.patch('melissa.actions.notification.Pushbullet') as m_push:
+            from melissa.actions import notification
+            notification.profile.data = m_profile
+            notification.push(info)
+            m_push.assert_has_calls(m_profile)

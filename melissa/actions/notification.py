@@ -2,7 +2,7 @@ from melissa import profile
 from pushbullet import Pushbullet
 
 
-def handle_exceptions(f): # pragma: no cover
+def handle_exceptions(f):  # pragma: no cover
     def inner(*args, **kwargs):
         try:
             return f(*args, **kwargs)
