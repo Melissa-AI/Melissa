@@ -7,7 +7,8 @@ except ImportError:  # py2
 from pushbullet import Pushbullet
 
 
-def test_push(info):
+def test_push():
+    info = mock.Mock()
     with mock.patch('melissa.profile_loader.load_profile'):
         from melissa.actions import notification
         notification.push(info)
