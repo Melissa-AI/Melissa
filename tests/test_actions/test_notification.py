@@ -4,8 +4,6 @@ try:  # py3
 except ImportError:  # py2
     import mock
 
-from pushbullet import Pushbullet
-
 
 def test_push():
     info = mock.Mock()
