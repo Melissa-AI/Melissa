@@ -2,12 +2,12 @@ from melissa import profile
 from pushbullet import Pushbullet
 
 
-def handle_exceptions(f):
+def handle_exceptions(f): # pragma: no cover
     def inner(*args, **kwargs):
         try:
             return f(*args, **kwargs)
         except Exception as e:
-            print "Error: ", e
+            print("Error: ", e)
     return inner
 
 
