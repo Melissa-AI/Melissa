@@ -13,4 +13,4 @@ def test_push():
             from melissa.actions import notification
             notification.profile.data = m_profile
             notification.push(info)
-            m_push.assert_has_calls(m_profile)
+            m_push.assert_has_calls(info)
