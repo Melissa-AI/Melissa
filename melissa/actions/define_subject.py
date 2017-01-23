@@ -4,13 +4,14 @@ import wikipedia
 # Melissa
 from melissa.tts import tts
 
-WORDS = {'define_subject': {'groups': ['define']}
+WORDS = {'define_subject': {'groups': [['define'],['what', 'is'],['whats']]}
          }
-
-
 def define_subject(speech_text):
+    definewords = ['define','whats','is','whats']
     words_of_message = speech_text.split()
-    words_of_message.remove('define')
+
+    resultwords  = [word for word in words_of_message if word.lower() not in definewords]
+    cleaned_message = ' '.join(resultwords)
     cleaned_message = ' '.join(words_of_message).rstrip()
     if len(cleaned_message) == 0:
         msg = 'define requires subject words'
