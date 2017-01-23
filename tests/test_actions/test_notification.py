@@ -13,4 +13,5 @@ def test_push():
             from melissa.actions import notification
             notification.profile.data = m_profile
             notification.push(info)
-            m_push.assert_has_calls(info)
+            m_push.assert_has_calls([mock.call(notification.profile.data['push_bullet']),
+            mock.call(notification.profile.data['push_bullet']).push_note(notification.profile.data['va_name'], info)])
