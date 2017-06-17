@@ -1,8 +1,7 @@
-import pywapi
-
 # Melissa
 from melissa import profile
 from melissa.tts import tts
+from melissa.utilities import pywapi
 
 WORDS = {'weather': {'groups': ['weather', ['how', 'weather'],
                                 ['hows', 'weather']]}}
