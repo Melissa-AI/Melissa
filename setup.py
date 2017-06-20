@@ -7,7 +7,7 @@ except IOError:
     long_description = ""
 
 setup(
-    name="Melissa-Core",
+    name="melissa",
     version="0.1.0",
     description="melissa description",
     license="MIT",
