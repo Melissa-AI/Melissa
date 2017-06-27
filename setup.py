@@ -38,5 +38,5 @@ setup(
         ],
     },
     zip_safe=False,
-    keywords="virtual assistant speech-to-text text-to-speech",
+    keywords="virtual assistant speech-to-text text-to-speech melissa jarvis",
 )
