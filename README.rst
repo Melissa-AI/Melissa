@@ -3,6 +3,8 @@ Melissa
 
 | |Build Status| |Codacy Badge| |codecov.io| |Join the chat at https://gitter.im/Melissa-AI/Melissa-Core|
 
+|
+
 Melissa is a virtual assistant for OS X, Windows and Linux systems. She
 currently uses Google Chrome's speech-to-text engine, OS X's ``say``
 command, Linux's ``espeak`` command or Ivona TTS along with some magical
