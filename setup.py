@@ -22,7 +22,7 @@ setup(
     url='https://github.com/Melissa-AI/Melissa-Core/',
     license="MIT",
     packages=find_packages(),
-    package_data={'': ['LICENSE.md', 'README.md']},
+    package_data={'': ['LICENSE.md', 'README.rst']},
     package_dir={'melissa': 'melissa'},
     classifiers=[
         'Intended Audience :: Developers',
@@ -38,4 +38,5 @@ setup(
         ],
     },
     zip_safe=False,
+    keywords="virtual assistant speech-to-text text-to-speech",
 )
