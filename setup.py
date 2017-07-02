@@ -34,7 +34,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'melissa = melissa.main:main',
+            'melissa = melissa.__main__:main',
         ],
     },
     zip_safe=False,
