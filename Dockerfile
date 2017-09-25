@@ -14,9 +14,5 @@ COPY melissa/data/memory.db.default melissa/data/memory.db
 
 RUN pip install -r requirements.txt
 
-WORKDIR /app
-
-COPY melissa/data/memory.db.default /app/melissa/data/memory.db
-
-CMD [ "FLASK_APP=melissa/__main__.py", "flask", "run"]
+CMD ["FLASK_APP=melissa/__main__.py", "flask", "run"]
 
