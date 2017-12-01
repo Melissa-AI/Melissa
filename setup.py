@@ -14,7 +14,7 @@ except IOError:
 
 setup(
     name="melissa",
-    version="0.1.0",
+    version="0.0.1",
     description=description,
     long_description=long_description,
     author='Tanay Pant',
@@ -22,9 +22,7 @@ setup(
     url='https://github.com/Melissa-AI/Melissa-Core/',
     license="MIT",
     packages=find_packages(),
-    package_data={'': ['LICENSE.md', 'README.rst', 'data/memory.db.default',
-                       'templates/*', 'static/css/*', 'static/images/*', 
-                       'static/js/*', 'static/sounds/*']
+    package_data={'': ['LICENSE.md', 'README.rst']
           },
     package_dir={'melissa': 'melissa'},
     include_package_data=True,

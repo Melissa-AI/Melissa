@@ -9,3 +9,4 @@ venv/
 melissa.egg-info/
 dist/
 melissa/data/memory.db
+build/
