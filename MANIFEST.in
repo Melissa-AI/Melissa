@@ -4,3 +4,5 @@ recursive-include melissa static css *.css *.otf
 recursive-include melissa static images *.png
 recursive-include melissa static sounds *.js
 recursive-include melissa static *.mp3
+include requirements.txt
+include requirements-dev.txt
