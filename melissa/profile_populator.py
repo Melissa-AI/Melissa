@@ -3,7 +3,7 @@ import sys
 import subprocess
 import json
 from getpass import getpass
-from melissa.utilities import pywapi
+from melissa.utilities.pywapi import pywapi
 
 
 def tts_local(message):

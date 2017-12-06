@@ -1,4 +1,4 @@
-from melissa.utilities import pywapi
+from melissa.utilities.pywapi import pywapi
 
 # Melissa
 from melissa import profile
