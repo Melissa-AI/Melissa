@@ -1,9 +1,8 @@
-recursive-include melissa data memory.db.default
-recursive-include melissa templates index.html
+include melissa data memory.db.default
+include melissa templates index.html
 recursive-include melissa static css *.css *.otf
 recursive-include melissa static images *.png
 recursive-include melissa static sounds *.js
 recursive-include melissa static *.mp3
-recursive-include melissa utilities pywapi pywapi.py
 include requirements.txt
 include requirements-dev.txt

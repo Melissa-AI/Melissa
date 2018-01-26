@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from os.path import dirname, join
-
+import subprocess
 from setuptools import setup, find_packages
 
 import melissa
@@ -18,6 +18,15 @@ try:
     long_description = open("README.rst").read()
 except IOError:
     long_description = description
+
+if sys.platform.startswith('linux'):
+    subprocess.call(["sudo", "apt-get", "install", "gcc", "automake", "autoconf",
+        "libtool", "bison", "swig", "python-dev", "libpulse-dev", "espeak",
+        "multimedia-jack"])
+elif sys.platform == 'darwin':
+    subprocess.call(["sudo", "apt-get", "install", "say"])
+else:
+    pass
 
 setup(
     name="melissa",
