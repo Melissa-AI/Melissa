@@ -3,7 +3,7 @@
 from os.path import dirname, join
 import subprocess
 from setuptools import setup, find_packages
-
+import sys
 import melissa
 import os
 
