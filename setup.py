@@ -20,7 +20,7 @@ except IOError:
     long_description = description
 
 if sys.platform.startswith('linux'):
-    subprocess.call(["sudo", "apt-get", "install", "gcc", "automake", "autoconf",
+    subprocess.call(["sudo", "apt-get", "install", "-y", "gcc", "automake", "autoconf",
         "libtool", "bison", "swig", "python-dev", "libpulse-dev", "espeak",
         "multimedia-jack"])
 elif sys.platform == 'darwin':
