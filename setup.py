@@ -44,7 +44,6 @@ setup(
     include_package_data=True,
     python_requires='==2.7.*',
     install_requires=requirements,
-    extras_require={'dev': requirements_dev},
     classifiers=[
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
