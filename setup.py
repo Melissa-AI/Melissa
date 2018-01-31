@@ -10,7 +10,7 @@ import os
 with open('requirements.txt') as f:
     requirements = f.read().splitlines()
 
-with open('requirements.txt') as file:
+with open('requirements-dev.txt') as file:
     requirements_dev = file.read().splitlines()
 
 description = 'A lovely virtual assistant for OS X, Windows and Linux systems.'
