@@ -4,18 +4,17 @@ from bs4 import BeautifulSoup
 # Melissa
 from melissa.config import tts_engine
 
+
 class BusinessNewsReader(object):
     WORDS = {'news_reader': {'groups': [['business', 'news']]}}
 
-    # NDTV News
-    fixed_url = 'http://profit.ndtv.com/news/latest/'
-    news_headlines_list = []
-    news_details_list = []
-
-    def news_reader(self, text)
+    def news_reader(self, text):
+        fixed_url = 'http://profit.ndtv.com/news/latest/'
+        news_headlines_list = []
+        news_details_list = []
         for i in range(1, 2):
-    	    changing_slug = '/page-' + str(i)
-    	    url = fixed_url + changing_slug
+            changing_slug = '/page-' + str(i)
+            url = fixed_url + changing_slug
             r = requests.get(url)
             data = r.text
 
@@ -40,7 +39,9 @@ class BusinessNewsReader(object):
                     ")", "").replace(
                         "'", "") for element in news_details_list]
 
-        news_dictionary = dict(zip(news_headlines_list_small, news_details_list_small))
+        news_dictionary = dict(zip(
+            news_headlines_list_small, news_details_list_small
+        ))
         for key, value in news_dictionary.items():
             tts_engine.speak('Headline, ' + key)
             tts_engine.speak('News, ' + value)

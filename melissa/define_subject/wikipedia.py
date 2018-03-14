@@ -6,7 +6,7 @@ from melissa.config import tts_engine
 
 
 class Subject(object):
-    
+
     WORDS = {'define_subject': {'groups': ['define']}}
 
     def define_subject(self, speech_text):
@@ -31,7 +31,9 @@ class Subject(object):
             wiki_data = wiki_data.replace("'", "")
             tts_engine.speak(wiki_data)
         except wikipedia.exceptions.DisambiguationError as e:
-            return('Can you please be more specific? You may choose something' +
-                'from the following.')
+            return(
+                'Can you please be more specific? You may choose something' +
+                'from the following.'
+            )
             print("Can you please be more specific? You may choose something" +
                   "from the following; {0}".format(e))

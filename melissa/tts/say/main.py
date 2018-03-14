@@ -1,4 +1,3 @@
-import sys
 import subprocess
 
 import pyvona
@@ -7,8 +6,9 @@ import pyvona
 from melissa import profile
 from melissa.tts_facade import TTS
 
+
 class SayTTS(TTS):
-    
+
     def speak(self, message):
         """
         This function takes a message as an argument and converts it to
