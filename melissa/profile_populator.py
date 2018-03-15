@@ -49,24 +49,33 @@ def profile_populator():
 
     while(True):
         stt = raw_input(
-            'STT Engine ((g)oogle/(s)phinx/(t)elegram/(k)eyboard): ').lower()
-        if stt in ('g', 'google', 's', 'sphinx', 'k',
+            'STT Engine ((g)oogle/(w)atson/(s)phinx/(t)elegram/(k)eyboard): ').lower()
+        if stt in ('g', 'google', 's', 'sphinx', 'k', 'w', 'watson',
                    'keyboard', 't', 'telegram', ''):
             if empty(stt) or stt == 'g':
-                stt = 'google'
+                stt = 'speech_recognition'
             elif stt == 's':
                 stt = 'sphinx'
             elif stt == 't':
                 stt = 'telegram'
+                telegram_username = raw_input('Your username at Telegram: ')
+                if empty(telegram_username):
+                    telegram_username = 'tanay1337'
+            elif stt == 'w':
+                stt = 'stt_watson'
+                watson_username = raw_input('Your username at IBM Watson: ')
+                watson_password = raw_input('Your username at IBM Watson: ')
+                if empty(watson_username):
+                    print('Please enter your username for IBM 
+                        'Watson (REQUIRED)')
+                if empty(watson_password):
+                    print('Please enter your password for IBM 
+                        'Watson (REQUIRED)')
             elif stt == 'k':
                 stt = 'keyboard'
             break
-        print('Invalid input, please enter(g)oogle, (s)phinx, (t)elegram,' +
-              '(k)eyboard or < ENTER > .')
-
-    telegram_username = raw_input('Your username at Telegram: ')
-    if empty(telegram_username):
-        telegram_username = 'tanay1337'
+        print('Invalid input, please enter(g)oogle, (w)atson, (s)phinx,'
+              '(t)elegram, (k)eyboard or < ENTER > .')
 
     while(True):
         music_path = raw_input('Path to your music directory: ')
@@ -190,6 +199,8 @@ the city of your choice: ')
         'city_name': city_name,
         'city_code': city_code,
         'degrees': degrees,
+        'watson_username': watson_username,
+        'watson_password': watson_password,
         'pocketsphinx': {
             'modeldir': modeldir,
             'hmm': hmm,
