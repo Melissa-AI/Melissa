@@ -4,7 +4,8 @@ from stt_watson.SttWatsonAbstractListener import SttWatsonAbstractListener
 from melissa.stt_facade import STT
 from melissa.profile import data
 """
-Example of listener to use data given by stt-watson (stt-watson notify hypothesis to his listeners when he receive it)
+Example of listener to use data given by stt-watson
+(stt-watson notify hypothesis to his listeners when he receive it)
 
 Hypothesis format:
 {
@@ -12,6 +13,8 @@ Hypothesis format:
     'transcript': 'the transcription of your voice'
 }
 """
+
+
 class MyListener(SttWatsonAbstractListener):
     def __init__(self):
         pass
@@ -34,11 +37,17 @@ class MyListener(SttWatsonAbstractListener):
 
 
 class WatsonSTT(STT):
-    
+
     def __init__(self):
-        myListener = MyListener()
-        sttWatson = SttWatson(data['watson_username'], data['watson_password'])
+        self.myListener = MyListener()
+        self.sttWatson = SttWatson(
+            data['watson_username'], data['watson_password']
+        )
 
     def write(self):
-        sttWatson.addListener(myListener)
-        sttWatson.run()
+        self.sttWatson.addListener(self.myListener)
+        self.sttWatson.run()
+
+
+def instance():
+    return WatsonSTT()

@@ -49,7 +49,8 @@ def profile_populator():
 
     while(True):
         stt = raw_input(
-            'STT Engine ((g)oogle/(w)atson/(s)phinx/(t)elegram/(k)eyboard): ').lower()
+            'STT Engine ((g)oogle/(w)atson/(s)phinx/(t)elegram'
+            '/(k)eyboard): ').lower()
         if stt in ('g', 'google', 's', 'sphinx', 'k', 'w', 'watson',
                    'keyboard', 't', 'telegram', ''):
             if empty(stt) or stt == 'g':
@@ -66,11 +67,15 @@ def profile_populator():
                 watson_username = raw_input('Your username at IBM Watson: ')
                 watson_password = raw_input('Your username at IBM Watson: ')
                 if empty(watson_username):
-                    print('Please enter your username for IBM 
-                        'Watson (REQUIRED)')
+                    print(
+                        'Please enter your username for IBM' +
+                        'Watson (REQUIRED)'
+                    )
                 if empty(watson_password):
-                    print('Please enter your password for IBM 
-                        'Watson (REQUIRED)')
+                    print(
+                        'Please enter your password for IBM' +
+                        'Watson (REQUIRED)'
+                    )
             elif stt == 'k':
                 stt = 'keyboard'
             break
