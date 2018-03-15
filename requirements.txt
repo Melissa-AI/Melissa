@@ -35,6 +35,9 @@ tweepy==3.5.0
 
 # Speech To Text Module
 telepot==4.1
+SpeechRecognition
+stt-watson
+speech
 
 # Text To Speech Module
 pygame>=1.9.2b6
