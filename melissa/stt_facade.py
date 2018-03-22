@@ -1,4 +1,4 @@
-class SST(object):
+class STT(object):
 
     def write(self):
         """

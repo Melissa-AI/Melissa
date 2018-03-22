@@ -49,11 +49,13 @@ def profile_populator():
 
     while(True):
         stt = raw_input(
-            'STT Engine ((g)oogle/(w)atson/(s)phinx/(t)elegram'
+            'STT Engine ((g)oogle/(sr)speech_recognition/(w)atson/(s)phinx/(t)elegram'
             '/(k)eyboard): ').lower()
-        if stt in ('g', 'google', 's', 'sphinx', 'k', 'w', 'watson',
+        if stt in ('g', 'google', 's', 'sphinx',  'w', 'watson', 'k',
                    'keyboard', 't', 'telegram', ''):
             if empty(stt) or stt == 'g':
+                stt = 'google'
+            elif stt == 'sr':
                 stt = 'speech_recognition'
             elif stt == 's':
                 stt = 'sphinx'
@@ -62,6 +64,7 @@ def profile_populator():
                 telegram_username = raw_input('Your username at Telegram: ')
                 if empty(telegram_username):
                     telegram_username = 'tanay1337'
+                telegram_token = raw_input('Your Telegram token: ')
             elif stt == 'w':
                 stt = 'stt_watson'
                 watson_username = raw_input('Your username at IBM Watson: ')
@@ -79,8 +82,10 @@ def profile_populator():
             elif stt == 'k':
                 stt = 'keyboard'
             break
-        print('Invalid input, please enter(g)oogle, (w)atson, (s)phinx,'
-              '(t)elegram, (k)eyboard or < ENTER > .')
+        if empty(telegram_username):
+            telegram_username = 'tanay1337'
+        print('Invalid input, please enter(g)oogle, (sr)speech_recognition,'
+              '(w)atson, (s)phinx, (t)elegram, (k)eyboard or < ENTER > .')
 
     while(True):
         music_path = raw_input('Path to your music directory: ')
