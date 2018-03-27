@@ -7,6 +7,9 @@ from melissa.tts_facade import TTS
 
 class IvonaTTS(TTS):
 
+    def __init__(self):
+        self.name = 'ivona'    
+
     def speak(self, message):
         """
         This function takes a message as an argument and converts it to

@@ -6,6 +6,9 @@ from melissa.tts_facade import TTS
 
 class SayTTS(TTS):
 
+    def __init__(self):
+        self.name = 'say'
+
     def speak(self, message):
         """
         This function takes a message as an argument and converts it to
