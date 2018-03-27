@@ -20,17 +20,11 @@ else:
     pass
 
 while True:
-    text = '' # Text returned by STT Engine
+    text = ''  # Text returned by STT Engine
 
-    tts_engine.speak(text) # User's query
+    tts_engine.speak(text)  # User's query
 
-    response = '' # Response given by actions corresponding to text
+    response = ''  # Response given by actions corresponding to text
 
-    tts_engine.speak(response) # TTS Engine gives the response
-
+    tts_engine.speak(response)  # TTS Engine gives the response
     print(response)
-
-
-
-
-
