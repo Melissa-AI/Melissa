@@ -13,7 +13,7 @@ IvonaTTS = getattr(tts_module, IvonaTTS)
 if data['tts'] == 'ivona':
     tts_engine = IvonaTTS()
 elif data['tts'] == 'espeak':
-    tts_engine == EspeakTTS()
+    tts_engine = EspeakTTS()
 elif data['tts'] == 'say':
     tts_engine = SayTTS()
 else:
