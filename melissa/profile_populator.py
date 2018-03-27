@@ -49,14 +49,14 @@ def profile_populator():
 
     while(True):
         stt = raw_input(
-            'STT Engine ((g)oogle/(sr)speech_recognition/(w)atson/(s)phinx/(t)elegram'
-            '/(k)eyboard): ').lower()
-        if stt in ('g', 'google', 's', 'sphinx',  'w', 'watson', 'k',
+            'STT Engine ((g)oogle/(w)atson/(s)phinx/(t)elegram'
+            '/(sp)speech/(k)eyboard): ').lower()
+        if stt in ('g', 'google', 's', 'sphinx', 'sp', speech 'w', 'watson', 'k',
                    'keyboard', 't', 'telegram', ''):
             if empty(stt) or stt == 'g':
                 stt = 'google'
-            elif stt == 'sr':
-                stt = 'speech_recognition'
+            elif stt == 'sp':
+                stt = 'speech'
             elif stt == 's':
                 stt = 'sphinx'
             elif stt == 't':

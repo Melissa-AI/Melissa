@@ -1,5 +1,8 @@
 class STT(object):
 
+    def __init__(self):
+        self.name = ''
+
     def write(self):
         """
         This function takes a message as an argument and converts it to

@@ -3,7 +3,7 @@ This module contains implementation of Speech Recognition using
 SpeechRecognition package
 '''
 import speech_recognition as sr
-from melissa.stt_facade import STT
+from melissa.stt import STT
 
 
 class SpeechRecognitionSST(STT):
