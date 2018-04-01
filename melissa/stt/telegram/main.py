@@ -1,7 +1,8 @@
-import os
 from melissa.profile import data
-import speech_recognition as sr
 from melissa import brain
+import telepot
+import time
+
 
 class TelegramMessenger():
 
@@ -9,9 +10,8 @@ class TelegramMessenger():
         username = msg['chat']['username']
         command = msg['text'].lower().replace("'", "")
         if username == data['telegram_username']:
-            print(data['va_name'] + " thinks you said '"
-                + command + "'")
-        brain.query(command)
+            print(data['va_name'] + " thinks you said '" + command + "'")
+            brain.query(command)
 
     def send(self, msg):
         while True:
@@ -19,6 +19,6 @@ class TelegramMessenger():
                 quit()
             else:
                 bot = telepot.Bot(data['telegram_token'])
-                bot.notifyOnMessage(handle)
+                bot.notifyOnMessage(self.handle)
                 while 1:
-                 time.sleep(10)
+                    time.sleep(10)
