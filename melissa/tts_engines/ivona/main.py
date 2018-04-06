@@ -2,13 +2,12 @@ import subprocess
 import pyvona
 # Melissa
 from melissa.profile import data
-from melissa.tts_facade import TTS
+from melissa.tts import TTS
 
 
 class IvonaTTS(TTS):
 
-    def __init__(self):
-        self.name = 'ivona'    
+    name = 'ivona'    
 
     def speak(self, message):
         """

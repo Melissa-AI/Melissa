@@ -1,23 +1,25 @@
 # Melissa
 from profile import data
-from tts_engines.espeak.main import EspeakTTS
-from tts_engines.say.main import SayTTS
-from tts_engines.ivona.main import IvonaTTS
+import importlib
+import pkgutil
+import importlib
+import inspect
 
-tts_module = __import__('melissa.tts_engines')
+dict_tts = dict()
+for (_, name, _) in pkgutil.iter_modules(["tts_engines"]):
+    module = importlib.import_module('.' + name + ".main", "tts_engines")
+    
+    for cls, obj in inspect.getmembers(module):
+        if inspect.isclass(obj):
+            class_ = getattr(module,cls)
+            attributes = inspect.getmembers(class_)
+            li = [a for a in attributes if not(a[0].startswith('__') and a[0].endswith('__'))]
+            engine_name = li[0][1]
+            dict_tts[engine_name] = cls
+print(dict_tts)
 
-EspeakTTS = getattr(tts_module, EspeakTTS)
-SayTTS = getattr(tts_module, SayTTS)
-IvonaTTS = getattr(tts_module, IvonaTTS)
-
-if data['tts'] == 'ivona':
-    tts_engine = IvonaTTS()
-elif data['tts'] == 'espeak':
-    tts_engine = EspeakTTS()
-elif data['tts'] == 'say':
-    tts_engine = SayTTS()
-else:
-    pass
+if data['tts'] in dict_tts.keys():
+    tts_engine = dict_tts[data['tts']]
 
 while True:
     text = ''  # Text returned by STT Engine
@@ -28,3 +30,4 @@ while True:
 
     tts_engine.speak(response)  # TTS Engine gives the response
     print(response)
+

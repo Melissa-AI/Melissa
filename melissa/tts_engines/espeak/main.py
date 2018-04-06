@@ -1,13 +1,12 @@
 import subprocess
 # Melissa
 from melissa import profile
-from melissa.tts_facade import TTS
+from melissa.tts import TTS
 
 
 class EspeakTTS(TTS):
-
-    def __init__(self):
-        self.name = 'espeak'
+    
+    name = 'espeak'
 
     def speak(self, message):
         """

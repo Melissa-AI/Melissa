@@ -1,13 +1,12 @@
 import subprocess
 # Melissa
-from melissa import profile
-from melissa.tts_facade import TTS
+from melissa.profile import data
+from melissa.tts import TTS
 
 
 class SayTTS(TTS):
-
-    def __init__(self):
-        self.name = 'say'
+    
+    name = 'say'
 
     def speak(self, message):
         """
@@ -15,7 +14,7 @@ class SayTTS(TTS):
         speech.
         """
         engine = 'say'
-        if profile.data['va_gender'] == 'male':
+        if data['va_gender'] == 'male':
             language = '-valex'
             return subprocess.call([engine, language, message])
         else:

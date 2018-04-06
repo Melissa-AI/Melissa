@@ -1,7 +1,6 @@
 class TTS(object):
 
-    def __init__(self):
-    self.name = ''
+    name = ''
     
     def speak(self, message):
         """
