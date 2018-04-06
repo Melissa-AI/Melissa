@@ -1,4 +1,3 @@
-import subprocess
 import pyvona
 # Melissa
 from melissa.profile import data
@@ -7,7 +6,7 @@ from melissa.tts import TTS
 
 class IvonaTTS(TTS):
 
-    name = 'ivona'    
+    name = 'ivona'
 
     def speak(self, message):
         """
@@ -17,7 +16,7 @@ class IvonaTTS(TTS):
         access_key = data['ivona']['access_key']
         secret_key = data['ivona']['secret_key']
         engine = pyvona.create_voice(access_key, secret_key)
-        if profile.data['va_gender'] == 'female':
+        if data['va_gender'] == 'female':
             engine.voice_name = 'Salli'
         else:
             engine.voice_name = 'Joey'

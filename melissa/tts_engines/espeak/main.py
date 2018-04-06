@@ -5,7 +5,7 @@ from melissa.tts import TTS
 
 
 class EspeakTTS(TTS):
-    
+
     name = 'espeak'
 
     def speak(self, message):
