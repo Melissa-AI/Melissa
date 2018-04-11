@@ -35,6 +35,12 @@ tweepy==3.5.0
 
 # Speech To Text Module
 telepot==4.1
+SpeechRecognition
+speech
+pywin32
+
+# Sphinx
+pocketsphinx==0.1.3
 
 # Text To Speech Module
 pygame>=1.9.2b6
