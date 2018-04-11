@@ -59,7 +59,7 @@ def profile_populator():
                 stt = 'sphinx'
             elif stt == 't':
                 stt = 'telegram'
-            elif stt == 'wp':
+            elif stt == 'ws':
                 stt = 'win_speech'
             elif stt == 'k':
                 stt = 'keyboard'
