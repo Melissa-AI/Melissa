@@ -2,6 +2,7 @@
 from profile import data
 import sys
 from tts import TTS
+from stt import STT
 import importlib
 import pkgutil
 import inspect
@@ -24,8 +25,27 @@ except KeyError as e:
     )
     sys.exit(0)
 
+dict_stt = dict()
+for (_, name, _) in pkgutil.iter_modules(["stt_engines"]):
+    module = importlib.import_module('.' + name + ".main", "stt_engines")
+    for cls, obj in inspect.getmembers(module):
+        if obj in STT.__subclasses__():
+            class_ = getattr(module, cls)
+            dict_stt[str(class_.name)] = class_
+print(dict_stt)
+try:
+    if data['stt'] in dict_stt.keys():
+        stt_engine = dict_stt[data['stt']]
+except KeyError as e:
+    print(
+        "STT engine {0} is not available. Available STT engines: " +
+        "{1}".format(data['stt'], dict_stt.keys())
+    )
+    sys.exit(0)
+
+
 while True:
-    text = ''  # Text returned by STT Engine
+    text = stt_engine.write()   # Text returned by STT Engine
 
     tts_engine.speak(text)  # User's query
 
