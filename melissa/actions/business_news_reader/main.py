@@ -2,13 +2,13 @@ import requests
 from bs4 import BeautifulSoup
 
 # Melissa
-from melissa.config import tts_engine
+# from melissa.config import tts_engine
 WORDS = {'news_reader': {'groups': [['business', 'news']]}}
 
 class BusinessNewsReader(object):
 
 
-    def news_reader(self, text):
+    def news_reader(self):
         fixed_url = 'http://profit.ndtv.com/news/latest/'
         news_headlines_list = []
         news_details_list = []
@@ -22,7 +22,7 @@ class BusinessNewsReader(object):
 
             for news_headlines in soup.find_all('h2'):
                 news_headlines_list.append(news_headlines.get_text())
-
+            print(news_headlines_list)
             del news_headlines_list[-2:]
 
             for news_details in soup.find_all('p', 'intro'):
@@ -46,3 +46,6 @@ class BusinessNewsReader(object):
         for key, value in news_dictionary.items():
             news_string = news_string + 'Headline, ' + key + 'News, ' + value
         return news_string
+
+gg = BusinessNewsReader()
+print(gg.news_reader())

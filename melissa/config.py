@@ -18,7 +18,10 @@ try:
     if data['tts'] in dict_tts.keys():
         tts_engine = dict_tts[data['tts']]
 except KeyError as e:
-    print(dict_tts.keys())
+    print(
+        "TTS engine {0} is not available. Available TTS engines: " +
+        "{1}".format(data['tts'], dict_tts.keys())
+    )
     sys.exit(0)
 
 while True:
@@ -30,4 +33,3 @@ while True:
 
     tts_engine.speak(response)  # TTS Engine gives the response
     print(response)
-
