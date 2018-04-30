@@ -7,6 +7,8 @@ class GoogleSTT(STT):
     name = 'google'
 
     def write(self):
+
+        self.r = sr.Recognizer()
         while True:
             with sr.Microphone() as source:
                 self.r.adjust_for_ambient_noise(source)
