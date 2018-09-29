@@ -96,12 +96,12 @@ def profile_populator():
     if empty(city_code):
         city_list = pywapi.get_loc_id_from_weather_com(unicode(city_name))
         if city_list['count'] == 0:
-            print 'Sorry, search results were empty.'
+            print ('Sorry, search results were empty.')
             city_code = 'INXX0096'
         else:
             print 'Cities returned are: '
             for city_list_i in range(city_list['count']):
-                print str(city_list_i+1) + ": " + city_list[city_list_i][1]
+                print (str(city_list_i+1) + ": " + city_list[city_list_i][1])
             while(True):
                 city_choice_i = ''
                 city_choice_i = raw_input('Enter the index of \
@@ -114,8 +114,8 @@ the city of your choice: ')
                     city_code = city_list[city_choice_i-1][0]
                     break
                 else:
-                    print 'Enter an index from one of the choices.\
- Try again!'
+                    print ('Enter an index from one of the choices.\
+ Try again!')
 
     while(True):
         degrees = raw_input('(c)elsius/(f)ahrenheit): ').lower()
