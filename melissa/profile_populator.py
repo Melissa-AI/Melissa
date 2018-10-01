@@ -43,13 +43,12 @@ def profile_populator():
             break
         print('Invalid input, please enter male, female or <ENTER>.')
 
-    name = raw_input('Your name: ')
+    name = input('Your name: ')
     if empty(name):
         name = 'Tanay'
 
     while(True):
-        stt = raw_input(
-            'STT Engine ((g)oogle/(s)phinx/(t)elegram/(k)eyboard): ').lower()
+        stt = input('STT Engine ((g)oogle/(s)phinx/(t)elegram/(k)eyboard): ').lower()
         if stt in ('g', 'google', 's', 'sphinx', 'k',
                    'keyboard', 't', 'telegram', ''):
             if empty(stt) or stt == 'g':
@@ -64,12 +63,12 @@ def profile_populator():
         print('Invalid input, please enter(g)oogle, (s)phinx, (t)elegram,' +
               '(k)eyboard or < ENTER > .')
 
-    telegram_username = raw_input('Your username at Telegram: ')
+    telegram_username = input('Your username at Telegram: ')
     if empty(telegram_username):
         telegram_username = 'tanay1337'
 
     while(True):
-        music_path = raw_input('Path to your music directory: ')
+        music_path = input('Path to your music directory: ')
         if empty(music_path):
             music_path = '.'
             break
@@ -78,7 +77,7 @@ def profile_populator():
         print('Invalid input, please enter a valid directory path or <ENTER>.')
 
     while(True):
-        images_path = raw_input('Path to your images directory: ')
+        images_path = input('Path to your images directory: ')
         if empty(images_path):
             images_path = '.'
             break
@@ -86,25 +85,25 @@ def profile_populator():
             break
         print('Invalid input, please enter a valid directory path or <ENTER>.')
 
-    city_name = raw_input('Name of city where you live: ')
+    city_name = input('Name of city where you live: ')
     if empty(city_name):
         city_name = 'New Delhi'
 
-    city_code = raw_input('Code of city from weather.com\
- or <ENTER> for a search based on the name\
- of the city you live in: ')
+    city_code = input('Code of city from weather.com\
+    or <ENTER> for a search based on the name\
+    of the city you live in: ')
     if empty(city_code):
         city_list = pywapi.get_loc_id_from_weather_com(unicode(city_name))
         if city_list['count'] == 0:
             print ('Sorry, search results were empty.')
             city_code = 'INXX0096'
         else:
-            print 'Cities returned are: '
+            print('Cities returned are: ')
             for city_list_i in range(city_list['count']):
                 print (str(city_list_i+1) + ": " + city_list[city_list_i][1])
             while(True):
                 city_choice_i = ''
-                city_choice_i = raw_input('Enter the index of \
+                city_choice_i = input('Enter the index of \
 the city of your choice: ')
                 if empty(city_choice_i):
                     city_code = 'INXX0096'
@@ -118,7 +117,7 @@ the city of your choice: ')
  Try again!')
 
     while(True):
-        degrees = raw_input('(c)elsius/(f)ahrenheit): ').lower()
+        degrees = input('(c)elsius/(f)ahrenheit): ').lower()
         if degrees in ('c', 'celsius', 'f', 'fahrenheit', ''):
             if empty(degrees) or degrees == 'c':
                 degrees = 'celsius'
@@ -128,19 +127,19 @@ the city of your choice: ')
         print('Invalid input, please enter(c)elsius, (f)ahrenheit) or' +
               '<ENTER > .')
 
-    gmail_address = raw_input('Enter your gmail address (???@gmail.com): ')
+    gmail_address = input('Enter your gmail address (???@gmail.com): ')
     gmail_password = ''
     if len(gmail_address) > 0:
         gmail_password = getpass()
 
-    icloud_username = raw_input(
+    icloud_username = input(
         'Enter your icloud username/address (???@???.com): ')
     icloud_password = ''
     if len(icloud_username) > 0:
         icloud_password = getpass()
 
     while(True):
-        push_bullet = raw_input('Enter your Pushbullet token: ')
+        push_bullet = input('Enter your Pushbullet token: ')
         if empty(push_bullet):
             break
         elif not isinstance(push_bullet, str):
