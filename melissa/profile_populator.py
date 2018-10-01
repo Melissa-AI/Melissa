@@ -27,12 +27,12 @@ def profile_populator():
     print('Welcome to Melissa. Let us generate your profile!')
     print('Press Enter for using default values.')
 
-    va_name = raw_input('What would you like to name me?: ')
+    va_name = input('What would you like to name me?: ')
     if empty(va_name):
         va_name = 'Melissa'
 
     while(True):
-        va_gender = raw_input('What is my gender ((m)ale/(f)emale)?: ')
+        va_gender = input('What is my gender ((m)ale/(f)emale)?: ')
         if va_gender in ('male', 'm', 'female', 'f', ''):
             if empty(va_gender):
                 va_gender = 'female'
