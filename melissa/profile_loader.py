@@ -8,7 +8,7 @@ from profile_populator import profile_populator
 
 def load_profile(skip_message=False):
     if not skip_message:
-        print "Loading profile data"
+        print ("Loading profile data")
     if not os.path.isfile('profile.json'):
         profile_populator()
     profile_json = open('profile.json')

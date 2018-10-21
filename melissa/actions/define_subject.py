@@ -14,7 +14,7 @@ def define_subject(speech_text):
     cleaned_message = ' '.join(words_of_message).rstrip()
     if len(cleaned_message) == 0:
         msg = 'define requires subject words'
-        print msg
+        print (msg)
         tts(msg)
         return
 

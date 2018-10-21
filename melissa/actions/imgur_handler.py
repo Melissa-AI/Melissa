@@ -27,7 +27,7 @@ def image_uploader(speech_text):
     if profile.data['imgur']['client_id'] == "xxxx" \
             or profile.data['imgur']['client_secret'] == "xxxx":
         msg = 'upload requires a client id and secret'
-        print msg
+        print (msg)
         tts(msg)
         return
 
@@ -56,7 +56,7 @@ def image_uploader(speech_text):
             conn.commit()
             conn.close()
 
-            print result['link']
+            print (result['link'])
             tts('Your image has been uploaded')
 
 

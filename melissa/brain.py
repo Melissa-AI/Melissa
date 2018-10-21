@@ -130,33 +130,33 @@ def query(text):
             # If the priorities of the first two rows are
             # different we have one best priority.
             if rows[0][1] != rows[1][1]:
-                print "Best priority function found: " + rows[0][0]
+                print ("Best priority function found: " + rows[0][0])
 
             # Otherwise there is more then one function with the
             # best priority. Choose the first returned and list
             # the functions having the same best priority.
             else:
-                print "\nThe first function in the following "\
+                print ("\nThe first function in the following "\
                     + "having equal\n"\
                     + "priorities has been selected.\n"\
-                    + "----------------------------------"
+                    + "----------------------------------")
                 best_priority = rows[0][1]
                 for pos in range(0, len(rows)):
                     if rows[pos][1] != best_priority:
                         break
-                    print 'function: (' + rows[pos][0]\
-                        + ')  priority: ' + str(rows[pos][1])
+                    print ('function: (' + rows[pos][0]\
+                        + ')  priority: ' + str(rows[pos][1]))
 
-            print "Run function " + rows[0][0]
+            print ("Run function " + rows[0][0])
             module_name, function = rows[0][0].split()
             # run function
             getattr(actions_db.modules[module_name], function)(text)
 
         else:
-            print top_scores
-            print "Run function '%s'\nfor word_group '%s'\nhaving score %4.2f"\
+            print (top_scores)
+            print ("Run function '%s'\nfor word_group '%s'\nhaving score %4.2f"\
                   % (top_scores[0]['function'], top_scores[0]['word_group'],
-                     top_scores[0]['score'])
+                     top_scores[0]['score']))
             module_name, function = top_scores[0]['function'].split()
             # run function
             getattr(actions_db.modules[module_name], function)(text)
@@ -181,8 +181,8 @@ def query(text):
         actions_db.cur.execute(sql)
         rows = actions_db.cur.fetchall()
         if len(rows) == 1:
-            print "Run function: '%s'  words : %d  priority: %d" \
-                  % (rows[0][0], rows[0][1], rows[0][2])
+            print ("Run function: '%s'  words : %d  priority: %d" \
+                  % (rows[0][0], rows[0][1], rows[0][2]))
             module_name, function = rows[0][0].split()
             # run function
             getattr(actions_db.modules[module_name], function)(text)
@@ -192,18 +192,18 @@ def query(text):
                     and rows[0][2] == rows[1][2]:
                 count = rows[0][1]
                 priority = rows[0][2]
-                print "These functions tied for best individual\n"\
+                print ("These functions tied for best individual\n"\
                     + "word match count.\n"\
-                    + "----------------------------------"
+                    + "----------------------------------")
                 for pos in range(0, len(rows)):
                     if rows[pos][1] != count \
                             or rows[pos][2] != priority:
                         break
-                    print "function: '%s'  words : %d  priority: %d"\
+                    print ("function: '%s'  words : %d  priority: %d"\
                         % (rows[pos][0], rows[pos][1],
-                           rows[pos][2])
+                           rows[pos][2]))
 
-            print "Run function " + rows[0][0]
+            print ("Run function " + rows[0][0])
             module_name, function = rows[0][0].split()
             # run function
             getattr(actions_db.modules[module_name], function)(text)

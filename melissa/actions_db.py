@@ -50,7 +50,7 @@ def create_actions_db(con, cur):
         con.commit()
 
     except sqlite3.Error as err:
-        print "Error %s:" % err.args[0]
+        print ("Error %s:" % err.args[0])
         sys.exit(1)
 
     return True
@@ -69,7 +69,7 @@ def insert_words(con, cur, name, words, priority):
                 .format(fn=function_name, p=priority))
 
         except sqlite3.Error as err:
-            print "Error %s:" % err.args[0]
+            print ("Error %s:" % err.args[0])
             sys.exit(1)
 
         for word in words:
@@ -103,7 +103,7 @@ def insert_words(con, cur, name, words, priority):
                     .format(fn=function_name, p=priority))
 
             except sqlite3.Error as err:
-                print "Error %s:" % err.args[0]
+                print ("Error %s:" % err.args[0])
                 sys.exit(1)
 
             for group in fields['groups']:
@@ -145,8 +145,8 @@ def insert_words(con, cur, name, words, priority):
         con.commit()
 
     else:
-        print "Invalid WORDS type '%s' for module %s"\
-            % (type(words), name)
+        print ("Invalid WORDS type '%s' for module %s"\
+            % (type(words), name))
 
 
 def assemble_actions_db():
@@ -163,21 +163,21 @@ def assemble_actions_db():
         cur = con.cursor()
 
     except sqlite3.Error as e:
-        print "Error %s:" % e.args[0]
+        print ("Error %s:" % e.args[0])
         sys.exit(1)
 
     if create_actions_db(con, cur):
-        print 'Successfully Created ' + profile.data['actions_db_file']
+        print ('Successfully Created ' + profile.data['actions_db_file'])
 
     package = importlib.import_module(profile.data['modules'])
     for finder, name, _ in pkgutil.walk_packages(package.__path__):
-        print 'Loading module ' + name
+        print ('Loading module ' + name)
         try:
             loader = finder.find_module(name)
             mod = loader.load_module(name)
 
         except:
-            print "Skipped module '%s' due to an error." % name
+            (print "Skipped module '%s' due to an error." % name)
 
         else:
             priority = mod.PRIORITY if hasattr(mod, 'PRIORITY') else 0
@@ -187,8 +187,8 @@ def assemble_actions_db():
                 modules[name] = mod
 
             else:
-                print 'WARNING: Module will not be used.'
-                print '    WORDS not found for module ' + name
+                print ('WARNING: Module will not be used.')
+                print ('    WORDS not found for module ' + name)
 
     # con.close()
 

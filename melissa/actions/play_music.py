@@ -41,7 +41,7 @@ def mp3gen():
     if sys.platform != 'darwin' \
             and sys.platform != 'win32' \
             and not sys.platform.startswith('linux'):
-        print "Music only enabled on darwin, win32, and linux."
+        print ("Music only enabled on darwin, win32, and linux.")
         return
 
     music_listing = []
